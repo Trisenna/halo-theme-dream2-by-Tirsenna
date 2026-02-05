@@ -1,0 +1,225 @@
+.post-thumbnail > img { display: none !important; }
+.like-page-container { padding: 1.5rem; background-color: var(--bg-a); }
+.like-section { margin-bottom: 2.5rem; }
+.like-title { font-size: 1.8rem; font-weight: 600; margin-bottom: 1.5rem; color: var(--title); display: flex; align-items: center; }
+.like-title.is-centered { justify-content: center; }
+.like-title i { color: var(--theme); margin-right: 0.5rem; font-size: 1.5rem; }
+.like-tabs { display: flex; border-bottom: 2px solid var(--light-b); margin-bottom: 1.5rem; }
+.like-tab { flex: 1; text-align: center; padding: 0.8rem 1rem; cursor: pointer; font-size: 1.1rem; color: var(--main); border-bottom: 3px solid transparent; transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; }
+.like-tab i { margin-right: 0.5rem; }
+.like-tab.active, .like-tab:hover { color: var(--theme); border-bottom-color: var(--theme); }
+.like-tab-content { display: none; }
+.like-tab-content.active { display: block; animation: fadeIn 0.5s ease-in-out; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+/* =================================================================
+   Waifu Card – 拟真光照系统
+   核心：
+   - ::before 负责"镜面高光斑 + Fresnel 边缘光 + 方向性明暗"
+   - ::after 负责"厚度底座"（暗边+亮边）
+   光照变量（由 JS 计算）：
+     --diffuse: 漫反射强度 0~1
+     --spec:    镜面高光强度 0~1
+     --rim:     Fresnel 边缘光强度 0~1
+     --spot-x/--spot-y: 高光斑点位置（百分比）
+     --shade-angle: 明暗过渡方向角
+     --tilt:    整体倾斜强度 0~1
+   ================================================================= */
+.waifu-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 2.5rem;
+}
+
+.waifu-card-wrap {
+  transform: perspective(800px);
+  transform-style: preserve-3d;
+  cursor: pointer;
+}
+
+.waifu-card {
+  position: relative;
+  display: flex;
+  aspect-ratio: 16 / 9;
+  color: #fff;
+  border-radius: 10px;
+  transform-style: preserve-3d;
+  background-color: #1a1a2e;
+  border: none;
+  overflow: hidden;
+  box-shadow: 0 30px 60px 0 rgba(0, 0, 0, 0.66);
+  transition: 1s cubic-bezier(0.445, 0.05, 0.55, 0.95);
+}
+
+/* ========== 边缘 Fresnel 高光（仅边框，不影响卡片内部）========== */
+.waifu-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: 11;
+  transform: translateZ(24px);
+
+  --ring: 7px;
+  padding: var(--ring);
+
+  /*
+    边缘高光：
+    - 高光覆盖翘起的两条相邻边缘（约 180° 弧度）
+    - 翘起角落最亮，沿边缘渐弱
+  */
+  background:
+    /* 边缘高光带：从 --shade-angle 开始，覆盖翘起的半圈边缘 */
+    conic-gradient(
+      from var(--shade-angle, 315deg),
+      /* 高光区：翘起角落最亮，向两侧边缘延伸 */
+      rgba(255, 255, 255, 0.95),           /* 0% - 翘起角落最亮 */
+      rgba(255, 255, 255, 0.85) 8%,        /* 保持高亮 */
+      rgba(255, 255, 255, 0.6) 15%,        /* 边缘中段 */
+      rgba(255, 255, 255, 0.25) 25%,       /* 渐弱 */
+      transparent 35%,                      /* 过渡到暗区 */
+      transparent 65%,                      /* 暗区（下沉侧） */
+      rgba(255, 255, 255, 0.25) 75%,       /* 渐入 */
+      rgba(255, 255, 255, 0.6) 85%,        /* 另一侧边缘 */
+      rgba(255, 255, 255, 0.85) 92%,       /* 保持高亮 */
+      rgba(255, 255, 255, 0.95) 100%       /* 回到最亮点 */
+    );
+
+  mix-blend-mode: screen;
+  backdrop-filter: blur(0.4px);
+  -webkit-backdrop-filter: blur(0.4px);
+
+  opacity: 0;
+  transition: opacity 0.35s ease;
+
+  /* 环形遮罩：只显示边缘区域 */
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+
+  mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  mask-composite: exclude;
+}
+
+.waifu-card-wrap:hover .waifu-card::before {
+  /* 强度由倾斜和边缘光驱动，基础值提高 */
+  opacity: calc(0.25 + var(--tilt, 0) * 0.6 + var(--rim, 0) * 0.5);
+}
+
+/* 厚度底座：内暗 + 外亮 */
+.waifu-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: 10;
+
+  box-shadow:
+    inset 0 0 0 5px rgba(20, 25, 45, 0.5),
+    inset 0 0 0 6px rgba(255, 255, 255, 0.6);
+
+  backdrop-filter: blur(0.25px);
+  -webkit-backdrop-filter: blur(0.6px);
+  transition: box-shadow 1s cubic-bezier(0.445, 0.05, 0.55, 0.95);
+}
+
+.waifu-card-wrap:hover .waifu-card {
+  transform: rotateX(var(--rotate-x, 0deg)) rotateY(var(--rotate-y, 0deg));
+  box-shadow:
+    0 0 40px 5px rgba(255, 255, 255, 0.15),
+    0 0 0 1px rgba(255, 255, 255, 0.6),
+    0 30px 60px 0 rgba(0, 0, 0, 0.66);
+  transition: 0.6s cubic-bezier(0.23, 1, 0.32, 1),
+              box-shadow 2s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.waifu-card-wrap:hover .waifu-card::after {
+  box-shadow:
+    inset 0 0 0 4px rgba(20, 25, 45, 0.6),
+    inset 0 0 0 5px rgba(255, 255, 255, 0.5);
+  transition: box-shadow 2s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.waifu-bg {
+  position: absolute;
+  top: -10px; left: -10px; right: -10px; bottom: -10px;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+  opacity: 0.75;
+  transition: transform 1s cubic-bezier(0.445, 0.05, 0.55, 0.95),
+              opacity 5s cubic-bezier(0.445, 0.05, 0.55, 0.95) 1s;
+  pointer-events: none;
+}
+
+.waifu-card-wrap:hover .waifu-bg {
+  opacity: 0.9;
+  transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1),
+              opacity 5s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.waifu-content {
+  position: relative;
+  z-index: 5;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: none;
+}
+
+.waifu-avatar { display: none; }
+
+.waifu-info { text-shadow: 0px 4px 12px rgba(0, 0, 0, 0.8), 0px 1px 3px rgba(0, 0, 0, 1); text-align: center; }
+.waifu-name { font-size: 2rem; font-weight: 700; margin: 0 0 0.5rem; }
+.waifu-source { font-size: 1rem; opacity: 0.9; margin: 0; letter-spacing: 0.5px; }
+
+/* 列表布局（保持不变） */
+.ranked-list { display: flex; flex-direction: column; gap: 1.2rem; }
+.ranked-item { display: flex; border-radius: 12px; overflow: hidden; transition: box-shadow 0.3s ease, border-color 0.3s ease; background-color: rgba(255, 255, 255, 0.08); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.15); box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2); }
+.ranked-item:hover { box-shadow: 0 12px 35px rgba(0, 0, 0, 0.25); border-color: rgba(255, 255, 255, 0.25); }
+.ranked-item-cover-link { display: block; flex-shrink: 0; position: relative; }
+.item-status { position: absolute; top: 0.5rem; right: 0.5rem; background-color: rgba(0, 0, 0, 0.6); color: #fff; padding: 0.2rem 0.5rem; font-size: 0.8rem; border-radius: var(--radius-inner); z-index: 1; }
+.ranked-item-cover { width: 120px; height: 100%; object-fit: cover; }
+.ranked-item-info { flex-grow: 1; min-width: 0; padding: 1rem 1.5rem; display: flex; flex-direction: column; }
+.ranked-item-info a { color: inherit; text-decoration: none; }
+.ranked-item-title { font-size: 1.25rem; font-weight: 600; margin: 0 0 0.5rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; transition: color 0.3s ease; }
+.ranked-item-info a:hover .ranked-item-title { color: var(--theme); }
+.ranked-item-desc { font-size: 0.9rem; color: var(--dark-b); line-height: 1.7; margin: 0; max-height: 5.1em; overflow: hidden; transition: max-height 0.4s ease-in-out; }
+.ranked-item-desc.is-expanded { max-height: 500px; }
+.ranked-item-desc::after { display: none; }
+.ranked-item-footer { display: flex; justify-content: space-between; align-items: center; margin-top: auto; padding-top: 0.8rem; border-top: 1px solid rgba(255, 255, 255, 0.1); }
+.ranked-item-tags { margin: 0; flex-grow: 1; min-width: 0; }
+.ranked-item-tags .tag { font-size: 0.75rem; padding: 0.3em 0.8em; margin: 0 0.4rem 0.4rem 0; background-color: var(--item-bg-color, var(--bg-c)); color: var(--main); border-radius: 6px; border: 1px solid var(--light-b); display: inline-block; transition: all 0.2s ease; }
+.ranked-item-tags .tag:hover { background-color: var(--theme-a); color: var(--theme); border-color: var(--theme); transform: translateY(-2px); }
+
+.read-more-btn {
+  background: none;
+  border: none;
+  color: var(--theme);
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 500;
+  padding: 0.2rem 0;
+  flex-shrink: 0;
+  margin-left: 1rem;
+}
+.read-more-btn:hover { text-decoration: underline; }
+
+@media (max-width: 768px) {
+  .waifu-grid { grid-template-columns: 1fr; }
+  .waifu-card { transform: none !important; }
+  .waifu-card::before { display: none; }
+  .like-title { font-size: 1.5rem; }
+  .ranked-item { flex-direction: column; }
+  .ranked-item-cover { width: 100%; height: 160px; }
+  .ranked-item-footer { flex-direction: column; align-items: flex-start; border-top: none; padding-top: 0.5rem; }
+  .ranked-item-tags { margin-bottom: 0.5rem; }
+  .read-more-btn { margin-left: 0; }
+}

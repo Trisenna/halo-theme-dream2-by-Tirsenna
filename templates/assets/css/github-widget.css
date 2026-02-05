@@ -1,0 +1,118 @@
+/**
+ * GitHub Widget Styles
+ * - GitHub 贡献图模块
+ * - 开源项目模块
+ */
+
+/* ==================== GitHub 贡献图 ==================== */
+
+.widget.github-contributions {
+  padding: 0;
+}
+
+.widget.github-contributions .github-chart-container {
+  padding: 8px;
+}
+
+.widget.github-contributions .github-chart {
+  display: block;
+  width: 100%;
+  min-height: 80px;
+  border-radius: 4px;
+}
+
+html.night .widget.github-contributions .github-chart {
+  filter: brightness(0.9);
+}
+
+/* ==================== 开源项目 ==================== */
+.widget.github-projects .project-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.widget.github-projects .project-item {
+  display: block;
+  padding: 12px;
+  background: var(--bg-a);
+  border-radius: var(--radius-inner);
+  border: 1px solid var(--light-b);
+  transition: all 0.3s ease;
+  text-decoration: none;
+}
+
+.widget.github-projects .project-item:hover {
+  border-color: var(--theme);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.widget.github-projects .project-name {
+  display: flex;
+  align-items: center;
+  font-weight: 500;
+  font-size: 0.95em;
+  color: var(--theme);
+  margin-bottom: 6px;
+  transition: color 0.3s;
+}
+
+.widget.github-projects .project-name i {
+  margin-right: 6px;
+  font-size: 1.1em;
+}
+
+.widget.github-projects .project-item:hover .project-name {
+  color: var(--theme);
+}
+
+.widget.github-projects .project-desc {
+  font-size: 0.85em;
+  color: var(--dark-b);
+  line-height: 1.5;
+  margin: 0 0 8px 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.widget.github-projects .project-meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 0.8em;
+  color: var(--dark-b);
+}
+
+.widget.github-projects .project-meta span {
+  display: flex;
+  align-items: center;
+}
+
+.widget.github-projects .project-meta i {
+  margin-right: 4px;
+  font-size: 1em;
+}
+
+.widget.github-projects .project-lang i {
+  color: var(--theme);
+}
+
+.widget.github-projects .project-stars i {
+  color: #f5a623;
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+  .widget.github-contributions .github-chart-container {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  .widget.github-contributions .github-chart {
+    min-width: 600px;
+  }
+}

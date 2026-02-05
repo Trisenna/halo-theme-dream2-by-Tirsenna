@@ -1,0 +1,939 @@
+<!DOCTYPE html>
+<th:block
+  th:insert="~{common/layout :: layout (title = ${title} + ' - ' + ${site.title}, canonical = @{/moments}, content = ~{::content}, isPost = true)}"
+  th:with="isJournals = true, enableShare = ${theme.config.page_config.enable_journals_share}, baseEnableComment = ${theme.config.page_config.enable_journals_comment}"
+  xmlns:th="https://www.thymeleaf.org">
+  <th:block th:fragment="content">
+    <style>
+      /* 基础容器 */
+      .timeline-container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 30px 15px 50px;
+        position: relative;
+        margin-top: -38px;
+      }
+      
+      /* 时间轴垂直线 - 固定位置 */
+      .timeline-line {
+        position: absolute;
+        left: 38px;
+        width: 4px;
+        background: var(--theme);
+        opacity: 0.3;
+        transition: opacity 0.3s ease, box-shadow 0.3s ease;
+        z-index: 1;
+      }
+      
+      .timeline-container:hover .timeline-line {
+        opacity: 0.5;
+        box-shadow: 0 0 10px var(--theme);
+      }
+      
+      /* 头部标题 */
+      .timeline-header {
+        position: relative;
+        margin-bottom: 30px;
+        padding-left: 65px;
+        min-height: 36px;
+        display: flex;
+        align-items: center;
+      }
+      
+      /* 标题圆点 - 固定位置 */
+      .timeline-header::before {
+        content: '';
+        position: absolute;
+        left: 17px;
+        width: 16px;
+        height: 16px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: var(--background);
+        border: 3px solid var(--theme);
+        border-radius: 50%;
+        z-index: 3;
+        box-sizing: border-box;
+        transition: box-shadow 0.3s ease;
+      }
+      
+      .timeline-header:hover::before {
+        box-shadow: 0 0 10px var(--theme);
+      }
+      
+      /* 标题连接线 - 固定位置 */
+      .timeline-header::after {
+        content: '';
+        position: absolute;
+        left: 33px;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 35px;
+        height: 3px;
+        background: var(--theme);
+        transition: width 0.3s ease;
+      }
+      
+      .timeline-header:hover::after {
+        width: 35px;
+      }
+      
+      /* 标题徽章 - 使用主题色 */
+      .timeline-badge {
+        background: var(--theme);
+        color: var(--light-a);
+        padding: 7px 18px;
+        border-radius: 20px;
+        font-size: 14px;
+        font-weight: 500;
+        display: inline-block;
+        transition: all 0.3s ease;
+      }
+      
+      .timeline-badge:hover {
+        transform: translateX(3px);
+        box-shadow: 0 3px 10px var(--theme);
+      }
+      
+      /* 时间轴列表 */
+      .timeline-list {
+        position: relative;
+      }
+      
+      /* 时间轴项 */
+      .timeline-item {
+        position: relative;
+        display: flex;
+        align-items: flex-start;
+        margin-bottom: 25px;
+      }
+      
+      /* 头像容器 - 固定位置 */
+      .timeline-avatar {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 50px;
+        height: 50px;
+        z-index: 2;
+      }
+      
+      /* 头像外框 - 使用主题色，完全不透明 */
+      .timeline-avatar-inner {
+        width: 100%;
+        height: 100%;
+        background: var(--background);
+        border: 3px solid var(--theme);
+        border-radius: 50%;
+        padding: 3px;
+        box-sizing: border-box;
+        transition: all 0.3s ease;
+      }
+      
+      .timeline-item:hover .timeline-avatar-inner {
+        transform: scale(1.1);
+        box-shadow: 0 0 15px var(--theme);
+        border-color: var(--theme);
+      }
+      
+      /* 真实头像图片 */
+      .timeline-avatar-img {
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        object-fit: cover;
+        display: block;
+      }
+      
+      /* 备用头像（当图片加载失败时显示） */
+      .timeline-avatar-fallback {
+        width: 100%;
+        height: 100%;
+        background: var(--theme);
+        border-radius: 50%;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        color: var(--light-a);
+        font-weight: bold;
+        font-size: 18px;
+      }
+      
+      /* 对话框样式卡片 */
+      .timeline-card {
+        width: 100%;
+        padding-left: 70px;
+      }
+      
+      .timeline-card-inner {
+        background: var(--background);
+        border-radius: 12px;
+        position: relative;
+        transition: all 0.3s ease;
+        border: 1px solid var(--light-b);
+      }
+      
+      /* 对话框小尾巴 */
+      .timeline-card-inner::before {
+        content: '';
+        position: absolute;
+        left: -10px;
+        top: 18px;
+        width: 0;
+        height: 0;
+        border-style: solid;
+        border-width: 10px 10px 10px 0;
+        border-color: transparent var(--light-b) transparent transparent;
+        transition: border-color 0.3s ease;
+      }
+      
+      .timeline-card-inner::after {
+        content: '';
+        position: absolute;
+        left: -8px;
+        top: 19px;
+        width: 0;
+        height: 0;
+        border-style: solid;
+        border-width: 9px 9px 9px 0;
+        border-color: transparent var(--background) transparent transparent;
+      }
+      
+      .timeline-card-inner:hover {
+        transform: translateX(3px);
+        box-shadow: 0 3px 12px rgba(0, 0, 0, 0.12);
+        border-color: var(--theme);
+      }
+      
+      .timeline-card-inner:hover::before {
+        border-right-color: var(--theme);
+      }
+      
+      /* 卡片头部 */
+      .card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 12px 15px 8px;
+      }
+      
+      .card-author {
+        font-size: 15px;
+        font-weight: 600;
+        color: var(--title);
+      }
+      
+      .card-time {
+        font-size: 13px;
+        color: var(--dark-b);
+        display: flex;
+        align-items: center;
+        gap: 4px;
+      }
+      
+      .card-time i {
+        color: var(--theme);
+      }
+      
+      /* 卡片内容 */
+      .card-content {
+        padding: 0 15px 12px;
+        color: var(--main);
+        line-height: 1.7;
+        font-size: 14px;
+      }
+      
+      .card-content p {
+        margin: 0 0 10px 0;
+      }
+      
+      .card-content p:last-child {
+        margin-bottom: 0;
+      }
+      
+      .parsed-content {
+        white-space: pre-wrap;
+        word-wrap: break-word;
+      }
+      
+      .parsed-content,
+      .parsed-content * {
+        font-family: inherit !important;
+        font-size: inherit !important;
+        color: inherit !important;
+      }
+      
+      /* 媒体内容 */
+      .card-media {
+        padding: 0 15px 12px;
+      }
+      
+      .card-media mew-photos {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+        gap: 8px;
+      }
+      
+      .card-media img {
+        width: 100%;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: transform 0.3s ease;
+      }
+      
+      .card-media img:hover {
+        transform: scale(1.05);
+      }
+      
+      /* 卡片底部 */
+      .card-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 8px 15px 12px;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+      
+      /* 标签 - 使用主题色 */
+      .card-tags {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        flex: 1;
+      }
+      
+      .tag-item {
+        display: inline-flex;
+        align-items: center;
+        gap: 3px;
+        padding: 4px 10px;
+        background: var(--bg-a);
+        color: var(--dark-b);
+        border-radius: 12px;
+        font-size: 12px;
+        transition: all 0.3s ease;
+        border: 1px solid transparent;
+      }
+      
+      .tag-item:hover {
+        background: var(--theme);
+        color: var(--light-a);
+        transform: translateY(-2px);
+        box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+      }
+      
+      /* 操作按钮 */
+      .card-actions {
+        display: flex;
+        gap: 12px;
+      }
+      
+      .btn-action {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        padding: 4px 10px;
+        border-radius: 12px;
+        font-size: 13px;
+        color: var(--dark-b);
+        cursor: pointer;
+        transition: all 0.3s ease;
+        background: transparent;
+        border: none;
+      }
+      
+      .btn-action.like {
+        color: #e74c3c;
+      }
+      
+      .btn-action.like:hover,
+      .btn-action.like.active {
+        background: rgba(231, 76, 60, 0.1);
+        transform: scale(1.1);
+      }
+      
+      .btn-action.comment:hover,
+      .btn-action.share:hover {
+        background: var(--bg-a);
+        color: var(--theme);
+        transform: scale(1.05);
+      }
+      
+      /* 评论区 */
+      .comment-section {
+        padding: 12px 15px;
+        border-top: 1px solid var(--light-b);
+        display: none;
+      }
+      
+      .comment-section.show {
+        display: block;
+      }
+      
+      /* 响应式设计 */
+      @media (max-width: 640px) {
+        .timeline-container {
+          padding: 20px 10px 40px;
+        }
+        
+        .timeline-header {
+          padding-left: 55px;
+        }
+        
+        .timeline-line {
+          left: 21px;
+        }
+        
+        .timeline-header::before {
+          left: 13px;
+        }
+        
+        .timeline-header::after {
+          left: 29px;
+        }
+        
+        .timeline-avatar {
+          width: 42px;
+          height: 42px;
+        }
+        
+        .timeline-avatar-fallback {
+          font-size: 16px;
+        }
+        
+        .timeline-card {
+          padding-left: 55px;
+        }
+        
+        .card-footer {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+        
+        .card-tags {
+          width: 100%;
+        }
+        
+        .card-actions {
+          width: 100%;
+          justify-content: flex-end;
+        }
+      }
+      
+      /* 淡入动画 */
+      @keyframes fadeInOut {
+        0% { opacity: 0; }
+        20% { opacity: 1; }
+        80% { opacity: 1; }
+        100% { opacity: 0; }
+      }
+    </style>
+    
+    <div class="timeline-container">
+      <!-- 时间轴线 -->
+      <div class="timeline-line"></div>
+      
+      <!-- 头部 -->
+      <div class="timeline-header">
+        <span class="timeline-badge">我的动态</span>
+      </div>
+      
+      <!-- 时间轴列表 -->
+      <div class="timeline-list">
+        <div class="timeline-item" th:each="moment : ${moments.items}">
+          <!-- 头像 -->
+          <div class="timeline-avatar">
+            <div class="timeline-avatar-inner">
+              <!-- 使用真实头像 -->
+              <img class="timeline-avatar-img" 
+                   th:src="${contributor.avatar}" 
+                   th:alt="${contributor.displayName}"
+                   th:onerror="'this.style.display=\'none\'; this.nextElementSibling.style.display=\'flex\''"
+                   loading="lazy">
+              <!-- 备用头像（图片加载失败时显示） -->
+              <div class="timeline-avatar-fallback">
+                <span th:text="${#strings.substring(contributor.displayName, 0, 1)}">T</span>
+              </div>
+            </div>
+          </div>
+          
+          <!-- 对话框卡片 -->
+          <div class="timeline-card">
+            <div class="timeline-card-inner">
+              <!-- 头部信息 -->
+              <div class="card-header">
+                <span class="card-author" th:text="${contributor.displayName}">Tirsenna</span>
+                <span class="card-time">
+                  <i class="ri-time-line"></i>
+                  <span th:text="${#dates.format(moment.spec.releaseTime,'yyyy-MM-dd HH:mm')}"></span>
+                </span>
+              </div>
+              
+              <!-- 正文内容 -->
+              <div class="card-content" 
+                   th:data-id="${moment.metadata.name}"
+                   th:data-content="${moment.spec.content.html}">
+                <div class="parsed-content" th:utext="${moment.spec.content.html}"></div>
+              </div>
+              
+              <!-- 媒体内容 -->
+              <div class="card-media" th:if="${!#lists.isEmpty(moment.spec.content.medium)}">
+                <mew-photos>
+                  <img th:each="item : ${moment.spec.content.medium}" 
+                       th:if="${item.type.name == 'PHOTO'}" 
+                       th:src="${item.url}" />
+                </mew-photos>
+                
+                <th:block th:each="item : ${moment.spec.content.medium}">
+                  <mew-video th:if="${item.type.name == 'VIDEO'}" 
+                            th:src="${item.url}"></mew-video>
+                  <mew-music th:if="${item.type.name == 'AUDIO'}" 
+                            th:url="${item.url}"
+                            th:with="list = ${#strings.listSplit(item.url,'/')}, size = ${#lists.size(list)}"
+                            th:name="${size >= 0 ? list[size - 1] : item.url}"
+                            th:cover="${#theme.assets('/img/music.webp')}"></mew-music>
+                </th:block>
+              </div>
+              
+              <!-- 底部操作 -->
+              <div class="card-footer">
+                <div class="card-tags">
+                  <!-- 标签将由JS动态生成 -->
+                </div>
+                
+                <div class="card-actions">
+                  <button class="btn-action like" 
+                          th:data-id="${moment.metadata.name}"
+                          th:classappend="${moment.stats.upvote > 0 ? 'active' : ''}">
+                    <i class="ri-heart-3-line"></i>
+                    <span th:text="${moment.stats.upvote ?: '0'}"></span>
+                  </button>
+                  
+                  <button class="btn-action comment" 
+                          th:if="${baseEnableComment}"
+                          onclick="this.closest('.timeline-card-inner').querySelector('.comment-section')?.classList.toggle('show')">
+                    <i class="ri-message-3-line"></i>
+                    <span th:text="${moment.stats.totalComment ?: '0'}"></span>
+                  </button>
+                  
+                  <button class="btn-action share" th:if="${enableShare}">
+                    <i class="ri-share-forward-line"></i>
+                  </button>
+                </div>
+              </div>
+              
+              <!-- 评论区 -->
+              <div class="comment-section" th:if="${baseEnableComment}">
+                <div th:if="${haloCommentEnabled}">
+                  <halo:comment group="moment.halo.run" kind="Moment" 
+                               th:attr="name=${moment.metadata.name}"/>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- 分页 -->
+      <th:block th:replace="~{main/pagination :: pagination (${moments}, '/moments')}"/>
+    </div>
+    
+    <script>
+      (function() {
+        'use strict';
+        
+        // 全局状态管理
+        const TimelineManager = {
+          initialized: false,
+          retryCount: 0,
+          maxRetries: 5,
+          retryDelay: 100,
+          
+          // 初始化主函数
+          init() {
+            if (this.initialized) return;
+            
+            // 确保关键元素存在
+            if (!this.checkElements()) {
+              if (this.retryCount < this.maxRetries) {
+                this.retryCount++;
+                setTimeout(() => this.init(), this.retryDelay);
+                return;
+              } else {
+                console.warn('Timeline: 初始化失败，元素未找到');
+                return;
+              }
+            }
+            
+            this.initialized = true;
+            this.setupTimeline();
+            this.parseTags();
+            this.setupEventListeners();
+            this.observeChanges();
+          },
+          
+          // 检查必要元素是否存在
+          checkElements() {
+            const line = document.querySelector('.timeline-line');
+            const header = document.querySelector('.timeline-header');
+            const items = document.querySelectorAll('.timeline-item');
+            
+            return line && header && items.length > 0;
+          },
+          
+          // 设置时间轴
+          setupTimeline() {
+            // 使用 requestAnimationFrame 确保在渲染后计算
+            requestAnimationFrame(() => {
+              this.adjustTimelineHeight();
+            });
+          },
+          
+          // 调整时间轴高度（修复版本）
+          adjustTimelineHeight() {
+            const line = document.querySelector('.timeline-line');
+            const header = document.querySelector('.timeline-header');
+            const items = document.querySelectorAll('.timeline-item');
+            
+            if (!line || !header || items.length === 0) return;
+            
+            // 强制重新布局以获取准确位置
+            void line.offsetHeight;
+            
+            try {
+              const container = document.querySelector('.timeline-container');
+              if (!container) return;
+              
+              // 获取容器的位置作为参考点
+              const containerRect = container.getBoundingClientRect();
+              
+              // 计算标题中心位置（相对于容器）
+              const headerRect = header.getBoundingClientRect();
+              const headerCenter = (headerRect.top - containerRect.top) + (headerRect.height / 2);
+              
+              // 获取最后一个项目的头像
+              const lastItem = items[items.length - 1];
+              const lastAvatar = lastItem.querySelector('.timeline-avatar');
+              
+              if (lastAvatar) {
+                // 计算最后一个头像的中心位置（相对于容器）
+                const avatarRect = lastAvatar.getBoundingClientRect();
+                const avatarCenter = (avatarRect.top - containerRect.top) + (avatarRect.height / 2);
+                
+                // 设置时间轴线位置和高度
+                const lineHeight = Math.max(0, avatarCenter - headerCenter);
+                
+                line.style.cssText = `
+                  top: ${headerCenter}px;
+                  height: ${lineHeight}px;
+                  opacity: 0.3;
+                `;
+                
+                console.log('Timeline adjusted:', {
+                  headerCenter,
+                  avatarCenter,
+                  lineHeight
+                });
+              }
+            } catch (error) {
+              console.error('Timeline: 计算高度失败', error);
+            }
+          },
+          
+          // 解析标签（修复版本）
+          parseTags() {
+            const contentElements = document.querySelectorAll('.card-content[data-id]');
+            
+            contentElements.forEach(element => {
+              this.parseContentWithTags(element);
+            });
+          },
+          
+          // 解析单个内容的标签（修复版本）
+          parseContentWithTags(contentElement) {
+            if (!contentElement) return;
+            
+            // 获取原始HTML内容
+            let originalHTML = contentElement.getAttribute('data-content');
+            const parsedDiv = contentElement.querySelector('.parsed-content');
+            
+            if (!parsedDiv) return;
+            
+            // 如果 data-content 为空，尝试从 parsed-content 获取
+            if (!originalHTML) {
+              originalHTML = parsedDiv.innerHTML;
+              if (!originalHTML) return;
+            }
+            
+            try {
+              // 创建临时元素解析HTML
+              const tempDiv = document.createElement('div');
+              tempDiv.innerHTML = originalHTML;
+              
+              // 获取纯文本内容用于标签检测
+              const textContent = tempDiv.textContent || tempDiv.innerText || '';
+              
+              // 标签正则：匹配末尾的标签行（可能有空格和换行）
+              const tagLinePattern = /((?:\s*#[^#\s]+)+)\s*$/;
+              const match = textContent.match(tagLinePattern);
+              
+              let tags = [];
+              let cleanHTML = originalHTML;
+              
+              if (match) {
+                // 提取标签
+                const tagString = match[1];
+                const tagPattern = /#[^#\s]+/g;
+                const tagMatches = tagString.match(tagPattern);
+                
+                if (tagMatches && tagMatches.length > 0) {
+                  tags = tagMatches.map(tag => tag.substring(1));
+                  console.log('Found tags:', tags);
+                  
+                  // 从HTML中移除标签部分
+                  // 方法：将HTML转为文本，移除标签，然后映射回HTML
+                  const tagStartIndex = match.index;
+                  const beforeTagText = textContent.substring(0, tagStartIndex);
+                  
+                  // 创建新的div来处理HTML
+                  const cleanDiv = document.createElement('div');
+                  cleanDiv.innerHTML = originalHTML;
+                  
+                  // 找到并移除包含标签的最后部分
+                  // 使用更简单的方法：直接操作innerHTML字符串
+                  // 查找标签在HTML中的位置（考虑HTML标签）
+                  const escapedTagString = tagString.trim().replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+                  const htmlPattern = new RegExp(`(${escapedTagString})(?:\\s*(?:<br\\s*/?>|</p>|</div>))*\\s*$`, 'i');
+                  
+                  cleanHTML = originalHTML.replace(htmlPattern, '');
+                  
+                  // 清理末尾的空白标签
+                  cleanHTML = cleanHTML.replace(/(?:<br\s*\/?>|\s|&nbsp;)*$/i, '');
+                  cleanHTML = cleanHTML.replace(/(<p[^>]*>)\s*<\/p>\s*$/i, '');
+                  cleanHTML = cleanHTML.replace(/(<div[^>]*>)\s*<\/div>\s*$/i, '');
+                }
+              }
+              
+              // 更新显示内容
+              const cardFooter = contentElement.closest('.timeline-card-inner')?.querySelector('.card-footer');
+              const tagsContainer = cardFooter?.querySelector('.card-tags');
+              
+              if (tagsContainer) {
+                // 更新内容（保留HTML格式）
+                parsedDiv.innerHTML = cleanHTML.trim();
+                
+                // 显示标签
+                if (tags.length > 0) {
+                  tagsContainer.innerHTML = tags.map(tag => `
+                    <span class="tag-item">
+                      <i class="ri-hashtag"></i>${this.escapeHtml(tag)}
+                    </span>
+                  `).join('');
+                } else {
+                  // 默认标签
+                  tagsContainer.innerHTML = `
+                    <span class="tag-item">
+                      <i class="ri-hashtag"></i>碎碎念
+                    </span>
+                  `;
+                }
+              }
+            } catch (error) {
+              console.error('Timeline: 标签解析失败', error);
+              // 失败时显示默认标签
+              const cardFooter = contentElement.closest('.timeline-card-inner')?.querySelector('.card-footer');
+              const tagsContainer = cardFooter?.querySelector('.card-tags');
+              if (tagsContainer) {
+                tagsContainer.innerHTML = `
+                  <span class="tag-item">
+                    <i class="ri-hashtag"></i>碎碎念
+                  </span>
+                `;
+              }
+            }
+          },
+          
+          // HTML转义
+          escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+          },
+          
+          // 设置事件监听器
+          setupEventListeners() {
+            // 窗口大小变化
+            let resizeTimer;
+            window.addEventListener('resize', () => {
+              clearTimeout(resizeTimer);
+              resizeTimer = setTimeout(() => {
+                this.adjustTimelineHeight();
+              }, 250);
+            });
+            
+            // 页面可见性变化
+            document.addEventListener('visibilitychange', () => {
+              if (!document.hidden) {
+                setTimeout(() => {
+                  this.adjustTimelineHeight();
+                  this.parseTags();
+                }, 100);
+              }
+            });
+            
+            // 浏览器前进/后退
+            window.addEventListener('pageshow', (event) => {
+              if (event.persisted) {
+                this.initialized = false;
+                this.retryCount = 0;
+                setTimeout(() => this.init(), 100);
+              }
+            });
+            
+            // 图片加载完成后重新计算
+            document.querySelectorAll('img').forEach(img => {
+              if (img.complete) {
+                this.adjustTimelineHeight();
+              } else {
+                img.addEventListener('load', () => {
+                  setTimeout(() => this.adjustTimelineHeight(), 100);
+                });
+                img.addEventListener('error', () => {
+                  setTimeout(() => this.adjustTimelineHeight(), 100);
+                });
+              }
+            });
+            
+            // 交互功能
+            this.setupInteractions();
+          },
+          
+          // 设置交互功能
+          setupInteractions() {
+            // 点赞功能
+            document.querySelectorAll('.btn-action.like').forEach(btn => {
+              btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                this.classList.toggle('active');
+                let count = parseInt(this.querySelector('span').textContent) || 0;
+                count = this.classList.contains('active') ? count + 1 : Math.max(0, count - 1);
+                this.querySelector('span').textContent = count;
+                
+                // 动画效果
+                this.style.transform = 'scale(1.2)';
+                setTimeout(() => {
+                  this.style.transform = '';
+                }, 200);
+              });
+            });
+            
+            // 分享功能
+            document.querySelectorAll('.btn-action.share').forEach(btn => {
+              btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                const title = document.title;
+                const url = window.location.href;
+                
+                if (navigator.share) {
+                  navigator.share({
+                    title: title,
+                    url: url
+                  }).catch(err => {
+                    if (err.name !== 'AbortError') {
+                      console.log('分享失败:', err);
+                    }
+                  });
+                } else {
+                  // 复制链接到剪贴板
+                  navigator.clipboard.writeText(url).then(() => {
+                    // 创建提示
+                    const tooltip = document.createElement('div');
+                    tooltip.textContent = '链接已复制';
+                    tooltip.style.cssText = `
+                      position: fixed;
+                      top: 50%;
+                      left: 50%;
+                      transform: translate(-50%, -50%);
+                      background: var(--theme);
+                      color: white;
+                      padding: 8px 16px;
+                      border-radius: 4px;
+                      z-index: 9999;
+                      animation: fadeInOut 2s ease;
+                    `;
+                    document.body.appendChild(tooltip);
+                    setTimeout(() => tooltip.remove(), 2000);
+                  }).catch(() => {
+                    alert('复制链接失败，请手动复制');
+                  });
+                }
+              });
+            });
+          },
+          
+          // 观察DOM变化
+          observeChanges() {
+            const timelineList = document.querySelector('.timeline-list');
+            if (!timelineList) return;
+            
+            const observer = new MutationObserver((mutations) => {
+              // 检查是否有新内容添加
+              let hasNewContent = false;
+              mutations.forEach(mutation => {
+                if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
+                  hasNewContent = true;
+                }
+              });
+              
+              if (hasNewContent) {
+                setTimeout(() => {
+                  this.adjustTimelineHeight();
+                  this.parseTags();
+                }, 100);
+              }
+            });
+            
+            observer.observe(timelineList, { 
+              childList: true, 
+              subtree: true,
+              attributes: true,
+              attributeFilter: ['data-content']
+            });
+          }
+        };
+        
+        // 多重初始化策略
+        // 1. DOMContentLoaded
+        if (document.readyState === 'loading') {
+          document.addEventListener('DOMContentLoaded', () => TimelineManager.init());
+        } else {
+          setTimeout(() => TimelineManager.init(), 0);
+        }
+        
+        // 2. load事件作为后备
+        window.addEventListener('load', () => {
+          setTimeout(() => {
+            if (!TimelineManager.initialized) {
+              TimelineManager.init();
+            } else {
+              // 已初始化但可能需要重新计算
+              TimelineManager.adjustTimelineHeight();
+            }
+          }, 100);
+        });
+        
+        // 3. 延迟执行作为最后保障
+        setTimeout(() => {
+          if (!TimelineManager.initialized) {
+            TimelineManager.init();
+          } else {
+            // 再次调整确保准确
+            TimelineManager.adjustTimelineHeight();
+          }
+        }, 1000);
+        
+      })();
+    </script>
+  </th:block>
+</th:block>

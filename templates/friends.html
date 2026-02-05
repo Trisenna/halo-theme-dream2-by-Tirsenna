@@ -1,0 +1,779 @@
+<th:block th:replace="~{common/layout :: layout(title = ${singlePage.spec.title}, content = ~{::content}, isPost = false)}">
+  <th:block th:fragment="content">
+    <!-- Custom Styles for About Page -->
+    <style>
+      .about-page-container {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+      }
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>在 Halo 中导入 Markdown 和 Word 文档 - Ryan Wang&#39;s Blog</title>
+
+    
+
+    
+      <link rel="manifest" href="/themes/theme-walker/assets/dist/.vite/manifest.json" />
+      <script src="/themes/theme-walker/assets/dist/main.js?v=1.14.0"></script>
+      <link rel="stylesheet" href="/themes/theme-walker/assets/dist/main.css?v=1.14.0" />
+    
+
+    
+      
+    
+  
+    
+
+    
+
+    <script>
+      window.initColorScheme("system","light","dracula",true,true)
+    </script>
+
+    <style>
+      .main {
+        max-width: 1400px;
+        margin: 0 auto;
+      }
+    </style>
+
+    <noscript>
+      <style>
+        body {
+          display: block !important;
+        }
+      </style>
+    </noscript>
+  <link rel="dns-prefetch" href="https://track.halo.run" />
+<link rel="apple-touch-icon" sizes="57x57" href="/apple-icon-57x57.png">
+<link rel="apple-touch-icon" sizes="60x60" href="/apple-icon-60x60.png">
+<link rel="apple-touch-icon" sizes="72x72" href="/apple-icon-72x72.png">
+<link rel="apple-touch-icon" sizes="76x76" href="/apple-icon-76x76.png">
+<link rel="apple-touch-icon" sizes="114x114" href="/apple-icon-114x114.png">
+<link rel="apple-touch-icon" sizes="120x120" href="/apple-icon-120x120.png">
+<link rel="apple-touch-icon" sizes="144x144" href="/apple-icon-144x144.png">
+<link rel="apple-touch-icon" sizes="152x152" href="/apple-icon-152x152.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-icon-180x180.png">
+<link rel="icon" type="image/png" sizes="192x192"  href="/android-icon-192x192.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<script
+    src="https://track.halo.run/api/script.js"
+    data-site-id="4"
+    defer
+></script>
+<meta name="me" content="🌚">
+<meta name="halo-showcase-verify" content="true" />
+<meta name="msapplication-TileColor" content="#ffffff">
+<meta name="msapplication-TileImage" content="/ms-icon-144x144.png">
+<meta name="theme-color" content="#ffffff">
+<style>
+  p > img {
+    border-radius: 0.4rem;
+    box-shadow: 2px 2px 0.4rem 2px rgba(0, 0, 0, 0.3);
+    overflow: hidden;
+  }
+
+  :root {
+    --halo-asw-base-rounded: 1em;
+  }
+</style>
+<meta content="Halo 2.21.0-SNAPSHOT" name="generator"/><meta name="description" content="介绍 Halo 内容助手插件"/><!-- plugin-editor-hyperlink-card start -->
+<script src="/plugins/editor-hyperlink-card/assets/static/hyperlink-card.iife.js?version=1.5.2"></script>
+<link rel="stylesheet" href="/plugins/editor-hyperlink-card/assets/static/var.css?version=1.5.2" />
+<!-- plugin-editor-hyperlink-card end -->
+<!-- PluginSearchWidget start -->
+<script src="/plugins/PluginSearchWidget/assets/static/search-widget.iife.js?version=1.7.1" defer></script>
+<link rel="stylesheet" href="/plugins/PluginSearchWidget/assets/static/style.css?version=1.7.1" />
+<!-- PluginSearchWidget end -->
+<!-- PluginLightGallery start -->
+<link href="/plugins/PluginLightGallery/assets/static/css/lightgallery.min.css" rel="stylesheet" />
+<script defer src="/plugins/PluginLightGallery/assets/static/js/lightgallery.min.js"></script>
+<!-- PluginLightGallery zoom plugin -->
+<script defer src="/plugins/PluginLightGallery/assets/static/js/plugins/zoom/lg-zoom.min.js"></script>
+<script type="text/javascript">
+    document.addEventListener("DOMContentLoaded", function () {
+       document.querySelectorAll(`#post-content img`)?.forEach(function (node) {
+  if (node) {
+    node.dataset.src = node.src;
+  }
+
+  const galleries = document.querySelectorAll(`#post-content`);
+
+  if (galleries.length > 0) {
+    galleries.forEach(function (node) {
+      lightGallery(node, {
+          selector: "img",
+      });
+    });
+  }
+});
+
+    });
+</script>
+<!-- PluginLightGallery end -->
+<script type="application/ld+json">{"headline":"在 Halo 中导入 Markdown 和 Word 文档","description":"介绍 Halo 内容助手插件","image":{"url":"https://ryanc.cc/upload/halo-content-tools.png","width":1200,"height":630,"@type":"ImageObject"},"url":"https://ryanc.cc/archives/halo-content-tools","mainEntityOfPage":"https://ryanc.cc/archives/halo-content-tools","datePublished":"2025-07-17T04:36:20.318500903Z","dateModified":"2025-07-23T14:32:31.381877419Z","author":{"name":"Ryan Wang","url":"https://ryanc.cc/authors/ryanwang","image":{"url":"https://ryanc.cc/upload/e6027ef5-1686-4296-827b-7c573ed1a53a.png","@type":"ImageObject"},"@type":"Person"},"publisher":{"name":"Ryan Wang","@type":"Person"},"keywords":["Halo"],"@context":"https://schema.org","@type":"Article"}</script><meta property="og:image" content="https://ryanc.cc/upload/halo-content-tools.png"/><meta property="og:type" content="article"/><meta property="article:published_time" content="2025-07-17T04:36:20.318500903Z"/><meta property="article:modified_time" content="2025-07-23T14:32:31.381877419Z"/><meta property="og:title" content="在 Halo 中导入 Markdown 和 Word 文档"/><meta property="og:description" content="介绍 Halo 内容助手插件"/><meta property="article:author" content="https://ryanc.cc/authors/ryanwang"/><meta property="article:tag" content="Halo"/><meta content="summary" name="twitter:card"/><meta content="https://ryanc.cc/authors/ryanwang" name="twitter:creator"/><meta content="在 Halo 中导入 Markdown 和 Word 文档" name="twitter:title"/><meta content="介绍 Halo 内容助手插件" name="twitter:description"/><meta content="https://ryanc.cc/upload/halo-content-tools.png" name="twitter:image"/><meta content="" name="sogou_site_verification"/><meta content="NHmbRqufbHICmawl2obxJSnn4HnEEXXu3YJ41VVdEcE" name="google-site-verification"/><meta content="" name="sm-site-verification"/><meta content="80E2340795E06DEC3BBFF746C9321B6B" name="msvalidate.01"/><!-- plugin-comment-widget start -->
+<link rel="modulepreload" href="/plugins/PluginCommentWidget/assets/static/comment-widget.js?version=3.1.0-dev.1">
+<link rel="stylesheet" href="/plugins/PluginCommentWidget/assets/static/index.css?version=3.1.0-dev.1" />
+<!-- plugin-comment-widget end -->
+<script type="module">
+import "/plugins/ai-assistant/assets/static/rag-ui/rag-ui.js?v=2.0.0-dev.6";
+</script>
+<script type="module">
+import { rewriteSearchWidget } from "/plugins/ai-assistant/assets/static/rag-ui/rag-ui.js?v=2.0.0-dev.6";
+rewriteSearchWidget('app-z0awg5mo', JSON.parse('{"defaultTab":"search"}'));
+</script>
+<!-- plugin-ai-assistant summary start -->
+<script src="/plugins/ai-assistant/assets/static/ai-summary/index.js?v=2.0.0-dev.6"></script>
+<link rel="stylesheet" href="/plugins/ai-assistant/assets/static/ai-summary/index.css?version=2.0.0-dev.6" />
+<!-- plugin-ai-assistant summary end -->
+<!-- plugin-shiki start -->
+<script type="module" src="/plugins/shiki/assets/static/shiki-code.js?version=1.0.0"></script>
+<!-- plugin-shiki end -->
+<script async defer src="/halo-tracker.js" data-group="content.halo.run" data-plural="posts" data-name="f75e2c4d-2e94-472e-8e3a-59bd5eb7d2d9"></script>
+<link rel="icon" href="/apple-icon-180x180.png" />
+</head>
+  <body x-data="app" class="hidden" data-overlayscrollbars-initialize>
+    <div class="fixed left-0 right-0 top-0 z-50 flex items-center bg-base-100 p-4 shadow-sm lg:hidden">
+  <i class="animated fadeIn i-ri-menu-2-line inline-block cursor-pointer text-2xl" @click="openMenu()"> </i>
+  <a href="https://ryanc.cc">
+    <img
+      class="animated fadeIn avatar mx-4 mt-0 size-9 rounded-lg"
+      src="/upload/avatar-128-2024.jpg"
+      alt="Ryan Wang&#39;s Blog"
+      width="36"
+      height="36"
+    />
+  </a>
+  <h1
+    class="animated fadeIn mt-0 text-xl font-extrabold"
+    style="animation-delay: 0.1s"
+  >Ryan Wang</h1>
+  <!-- https://github.com/halo-sigs/plugin-search-widget -->
+  <div class="flex flex-1 items-center justify-end gap-4">
+    <a
+      class="animated fadeIn i-ri-search-line inline-block cursor-pointer text-xl text-base-content/60 hover:text-base-content"
+      href="javascript:SearchWidget.open()"
+    ></a>
+
+    
+      
+      <label
+        class="swap swap-rotate hidden [@supports(color:oklch(0_0_0))]:inline-grid"
+        x-data="colorSchemeSwitcher"
+      >
+        <input type="checkbox" x-model="checked" @click="handleChange" />
+        <i class="i-tabler-sun swap-on text-xl text-base-content/60 hover:text-base-content"></i>
+        <i class="i-tabler-moon-stars swap-off text-xl text-base-content/60 hover:text-base-content"></i>
+      </label>
+    
+  </div>
+</div>
+
+    
+    <div id="app" class="main flex flex-col px-4 lg:flex-row" x-data="upvote('post','content.halo.run','posts')">
+      <div id="sidebar" class="sidebar-wrapper lg:static lg:w-1/4">
+  <div class="top-0 lg:sticky">
+    <div class="sidebar-content">
+      <div class="static left-0 right-0 top-0 z-50 hidden items-center p-4 px-0 lg:block">
+        <div class="flex items-center justify-between">
+          
+
+          <div
+            class="inline-flex items-center gap-4 justify-between !flex w-full"
+          >
+            
+              
+
+              <label
+                class="swap swap-rotate mt-4 hidden [@supports(color:oklch(0_0_0))]:inline-grid"
+                x-data="colorSchemeSwitcher"
+              >
+                <input type="checkbox" x-model="checked" @click="handleChange" />
+                <i class="i-tabler-sun swap-on text-2xl text-base-content/60 hover:text-base-content"></i>
+                <i class="i-tabler-moon-stars swap-off text-2xl text-base-content/60 hover:text-base-content"></i>
+              </label>
+            
+
+            <!-- https://github.com/halo-sigs/plugin-search-widget -->
+            <a
+              class="animated fadeIn i-ri-search-line mt-4 inline-block cursor-pointer text-2xl text-base-content/60 hover:text-base-content"
+              href="javascript:SearchWidget.open()"
+            ></a>
+          </div>
+        </div>
+        <div class="group relative mt-32 inline-block">
+          <a href="https://ryanc.cc">
+            <img
+              class="animated fadeIn avatar mx-0 size-24 rounded-lg"
+              src="/upload/avatar-128-2024.jpg"
+              alt="Ryan Wang&#39;s Blog"
+              width="96"
+              height="96"
+            />
+          </a>
+
+          
+            <a
+              href="/login?redirect_uri=/"
+              class="btn btn-circle btn-neutral btn-sm absolute inline-block translate-x-2 text-lg opacity-0 transition-all group-hover:translate-x-0 group-hover:opacity-100 -bottom-1 -right-2"
+            >
+              <span data-tip="登录" class="tooltip !inline-flex size-full items-center justify-center">
+                <i class="i-tabler-login inline-block text-base"></i>
+              </span>
+            </a>
+            
+          
+        </div>
+        <h1
+          class="animated fadeIn mt-8 text-4xl font-extrabold"
+          style="animation-delay: 0.1s"
+        >Ryan Wang</h1>
+      </div>
+      
+      
+      <div class="animated fadeIn" style="animation-delay: 0.4s">
+        <p class="my-4 hidden font-light text-base-content/80 lg:block">文章目录</p>
+        <div class="toc-container hidden lg:block"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="menu-container" :class="{ 'open' : menuVisible }">
+  <i
+    class="animated fadeIn close-menu-btn i-ri-arrow-left-line inline-block cursor-pointer text-2xl"
+    @click="closeMenu()"
+  ></i>
+
+  <div class="w-full" :class="{ 'animated fadeIn' : menuVisible}">
+    <ul x-data="menu" id="menu-container" class="w-full space-y-6">
+  
+    <li>
+      <a
+        class="flex items-center space-x-2.5 text-base-content/70 hover:text-base-content"
+        href="/"
+        target="_self"
+      >
+        
+        <span>首页</span>
+      </a>
+    </li>
+
+    
+  
+    <li>
+      <a
+        class="flex items-center space-x-2.5 text-base-content/70 hover:text-base-content"
+        href="/archives"
+        target="_self"
+      >
+        
+        <span>归档</span>
+      </a>
+    </li>
+
+    
+  
+    <li>
+      <a
+        class="flex items-center space-x-2.5 text-base-content/70 hover:text-base-content"
+        href="/links"
+        target="_self"
+      >
+        
+        <span>友链</span>
+      </a>
+    </li>
+
+    
+  
+    <li>
+      <a
+        class="flex items-center space-x-2.5 text-base-content/70 hover:text-base-content"
+        href="/moments"
+        target="_self"
+      >
+        
+        <span>瞬间</span>
+      </a>
+    </li>
+
+    
+  
+    <li>
+      <a
+        class="flex items-center space-x-2.5 text-base-content/70 hover:text-base-content"
+        href="/photos"
+        target="_self"
+      >
+        
+        <span>图库</span>
+      </a>
+    </li>
+
+    
+  
+    
+
+    <li id="item-menu-item-thcqruce" x-data="subMenu(&#39;menu-item-thcqruce&#39;)"
+    >
+      <div class="group transition-all duration-300" :class="{ 'py-2.5 px-3 rounded-lg bg-base-200' : open }">
+        <div @click="open = !open" class="flex cursor-pointer items-center justify-between">
+          <a
+            class="flex items-center space-x-2.5 text-base-content/70 hover:text-base-content"
+            :class="{ '!text-base-content' : open }"
+            href="/about"
+            target="_self"
+            @click.stop
+          >
+            
+            <span>关于</span>
+          </a>
+
+          <i
+            class="i-tabler-chevron-right inline-block text-base-content/60 transition-all group-hover:text-base-content"
+            :class="{ 'rotate-90' : open }"
+          ></i>
+        </div>
+
+        <ul class="mt-3 select-none space-y-2" x-show="open">
+          <li>
+            <a
+              href="/use"
+              target="_self"
+              class="flex items-center space-x-2.5 text-sm text-base-content/70 hover:text-base-content"
+            >
+              
+              <span>我的装备</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </li>
+  
+</ul>
+
+  </div>
+</div>
+<div class="mask" :class="{ 'open' : menuVisible}" @click="closeMenu()"></div>
+
+      <div
+        class="content-wrapper post-detail animated fadeIn pt-32 lg:w-3/4 lg:p-8"
+        :class="{ 'is-second' : menuVisible }" x-data="{name:&#39;f75e2c4d-2e94-472e-8e3a-59bd5eb7d2d9&#39;}"
+      >
+        <div
+          class="flex flex-wrap items-center justify-between gap-2" x-data="uiPermission(&#39;anonymousUser&#39;,&#39;system:posts:manage&#39;)"
+        >
+          <h1 class="break-all text-3xl font-bold">在 Halo 中导入 Markdown 和 Word 文档</h1>
+          <template x-if="shouldDisplay">
+            <a
+              class="btn btn-ghost btn-sm"
+              href="/console/posts/editor?name=f75e2c4d-2e94-472e-8e3a-59bd5eb7d2d9&amp;returnToView=true"
+            >
+              <i class="i-tabler-edit"></i>
+              <span> 编辑 </span>
+            </a>
+          </template>
+        </div>
+
+        <div class="my-4 flex flex-wrap items-center justify-between lg:my-8">
+          <div class="flex gap-4">
+            <div class="inline-flex items-center gap-1.5">
+              <div class="i-ri-archive-2-line text-base-content/50"></div>
+              <a
+                class="text-sm font-light text-base-content/50 hover:text-base-content"
+                href="/categories/about-halo"
+                title="关于 Halo"
+              >关于 Halo</a><a
+                class="text-sm font-light text-base-content/50 hover:text-base-content"
+                href="/categories/share"
+                title="分享"
+              >分享</a>
+            </div>
+            <div class="inline-flex items-center gap-1.5">
+              <div class="i-ri-eye-line text-base-content/50"></div>
+              <span class="text-sm font-light text-base-content/50">433</span>
+            </div>
+            
+          </div>
+          <div>
+            <div
+              class="text-sm font-light text-base-content/50"
+              title="2025-07-17T04:36:20.318500903Z"
+            >2025-07-17</div>
+          </div>
+        </div>
+
+        <img
+          class="post-feature-image mx-auto my-4 w-full rounded-lg"
+          src="/upload/halo-content-tools.png"
+          alt="在 Halo 中导入 Markdown 和 Word 文档"
+          srcset="/upload/thumbnails/2025/w400/halo-content-tools.png 400w,
+                      /upload/thumbnails/2025/w800/halo-content-tools.png 800w,
+                      /upload/thumbnails/2025/w1200/halo-content-tools.png 1200w,
+                      /upload/thumbnails/2025/w1600/halo-content-tools.png 1600w"
+          sizes="(max-width: 1600px) 100vw, 1600px"
+        />
+
+        <div
+          class="break-all py-4 tailwind-typography"
+          id="post-content"
+        >    <style class="pjax" data-pjax>
+    pre:has(code) {
+        filter: blur(10px) !important;
+        padding: 1rem !important;
+    }
+    </style>
+<ai-summary-widget kind="Post" group="content.halo.run" name="f75e2c4d-2e94-472e-8e3a-59bd5eb7d2d9"></ai-summary-widget>
+<blockquote>
+ <p style="">原文地址：<a href="https://www.lxware.cn/archives/halo-content-tools" target="_blank" rel="nofollow">https://www.lxware.cn/archives/halo-content-tools</a></p>
+</blockquote>
+<p style="">在 Halo 社区中，导入 Markdown 和 Word 文档的需求一直很高，但社区一直缺乏完善的解决方案。其主要原因在于 Markdown 和 Word 的文档格式较为复杂，难以完美支持所有格式特性，且图片资源的处理存在技术难点。</p>
+<p style="">现在，社区中已经有了一个插件可以很好地支持导入 Markdown 和 Word 文档，它就是 <hyperlink-inline-card target="_blank" href="https://www.halo.run/store/apps/app-SUvBR" theme="inline" custom-title="内容助手"><a href="https://www.halo.run/store/apps/app-SUvBR" target="_blank">https://www.halo.run/store/apps/app-SUvBR</a></hyperlink-inline-card>。该插件不仅支持导入 Markdown 和 Word 文档，还能够智能处理和导入图片资源，为用户提供了完整的文档迁移解决方案。</p>
+<h2 style="" id="%E5%AE%89%E8%A3%85"><strong>安装</strong></h2>
+<p style="">可以通过以下两种方式安装插件：</p>
+<ol>
+ <li>
+  <p style="">访问 <hyperlink-inline-card target="_blank" href="https://www.halo.run/store/apps/app-SUvBR" theme="inline" custom-title="应用市场 - 内容助手"><a href="https://www.halo.run/store/apps/app-SUvBR" target="_blank">https://www.halo.run/store/apps/app-SUvBR</a></hyperlink-inline-card> 页面直接下载</p>
+ </li>
+ <li>
+  <p style="">在 Console 内置的应用市场中搜索 <strong>内容助手</strong> 进行安装</p>
+ </li>
+</ol>
+<p style=""><img src="/upload/内容助手-安装.png" width="100%" height="100%" style="display: inline-block" srcset="/upload/thumbnails/2025/w400/-.png 400w, /upload/thumbnails/2025/w800/-.png 800w, /upload/thumbnails/2025/w1200/-.png 1200w, /upload/thumbnails/2025/w1600/-.png 1600w" sizes="(max-width: 400px) 400px, (max-width: 800px) 800px, (max-width: 1200px) 1200px, (max-width: 1600px) 1600px"></p>
+<h2 style="" id="%E5%AF%BC%E5%85%A5-markdown-%E6%96%87%E6%A1%A3"><strong>导入 Markdown 文档</strong></h2>
+<p style="">安装并启用插件后，就可以在 Console 侧边菜单的工具中找到 <strong>文章导入</strong> 的入口。点击进入后，选择 <strong>Markdown 导入</strong> 选项卡即可开始导入，如下图：</p>
+<p style=""><img src="/upload/内容助手-Markdown导入-界面.png" width="100%" height="100%" style="display: inline-block" srcset="/upload/thumbnails/2025/w800/-Markdown-.png 800w, /upload/thumbnails/2025/w400/-Markdown-.png 400w, /upload/thumbnails/2025/w1600/-Markdown-.png 1600w, /upload/thumbnails/2025/w1200/-Markdown-.png 1200w" sizes="(max-width: 400px) 400px, (max-width: 800px) 800px, (max-width: 1200px) 1200px, (max-width: 1600px) 1600px"></p>
+<h3 style="" id="%E5%8A%9F%E8%83%BD%E8%AF%A6%E8%A7%A3"><strong>功能详解</strong></h3>
+<ol>
+ <li>
+  <p style=""><strong>选择 Markdown 文件</strong>：用于选择单个 Markdown 文档，支持 <code>.md</code> 格式文件。</p>
+ </li>
+ <li>
+  <p style=""><strong>选择 Markdown 文件夹</strong>：用于选择包含 Markdown 文档的文件夹。选择文件夹后，系统会自动扫描其中的所有 Markdown 文档以及图片资源（如有）。</p>
+ </li>
+ <li>
+  <p style=""><strong>选择图片文件夹</strong>：用于选择 Markdown 文档中引用的图片资源。选择文件夹后，系统会自动扫描其中的所有图片资源并在导入时自动关联。</p>
+ </li>
+ <li>
+  <p style=""><strong>转为富文本格式</strong>：默认情况下，导入的 Markdown 文档会保持原有的 Markdown 格式。如果勾选此选项，系统会将文档转换为富文本格式，便于后续使用 Halo 的默认编辑器进行编辑。</p>
+ </li>
+</ol>
+<h3 style="" id="%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF"><strong>使用场景</strong></h3>
+<ul>
+ <li>
+  <p style="">从其他博客平台或写作工具迁移文章内容</p>
+ </li>
+ <li>
+  <p style="">导入使用本地 Markdown 编辑器创作的文章</p>
+ </li>
+ <li>
+  <p style="">批量导入历史文档和资料</p>
+ </li>
+</ul>
+<h3 style="" id="%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9"><strong>注意事项</strong></h3>
+<ol>
+ <li>
+  <p style="">导入 Markdown 文档后，如果需要在 Console 中编辑文章，请确保已经安装了任意一个 <a href="https://www.halo.run/store/apps?tag=editor">Markdown 编辑器插件</a>，否则无法正常打开编辑页面。</p>
+ </li>
+ <li>
+  <p style="">如果 Markdown 文档中引用了本地图片资源，请在导入前选择存放图片的文件夹，否则图片将无法正确上传和关联。</p>
+ </li>
+ <li>
+  <p style="">系统支持自动解析 Front Matter（文档头部的元数据），包括标题、别名（slug）、描述、摘要、分类、标签等信息。</p>
+ </li>
+</ol>
+<h3 style="" id="%E6%93%8D%E4%BD%9C%E7%A4%BA%E4%BE%8B"><strong>操作示例</strong></h3>
+<p style="">选择 Markdown 文件：</p>
+<p style=""><img src="/upload/内容助手-Markdown导入-选择文件.png" width="991px" height="Infinitypx" style="display: inline-block" srcset="/upload/thumbnails/2025/w400/-Markdown-_5qZYGG.png 400w, /upload/thumbnails/2025/w1200/-Markdown-_1BruL3.png 1200w, /upload/thumbnails/2025/w800/-Markdown-_LdHxZ8.png 800w, /upload/thumbnails/2025/w1600/-Markdown-_xjVFyx.png 1600w" sizes="(max-width: 400px) 400px, (max-width: 800px) 800px, (max-width: 1200px) 1200px, (max-width: 1600px) 1600px"></p>
+<p style="">选择图片文件夹（如果文档包含本地图片）：</p>
+<p style=""><img src="/upload/内容助手-Markdown导入-选择图片.png" width="100%" height="100%" style="display: inline-block" srcset="/upload/thumbnails/2025/w400/-Markdown-_jrHnqs.png 400w, /upload/thumbnails/2025/w800/-Markdown-_2TGEfF.png 800w, /upload/thumbnails/2025/w1200/-Markdown-_NDi9ta.png 1200w, /upload/thumbnails/2025/w1600/-Markdown-_7zV4yL.png 1600w" sizes="(max-width: 400px) 400px, (max-width: 800px) 800px, (max-width: 1200px) 1200px, (max-width: 1600px) 1600px"></p>
+<p style="">点击导入，等待导入完成：</p>
+<p style=""><img src="/upload/内容助手-Markdown导入-导入成功.png" width="100%" height="100%" style="display: inline-block" srcset="/upload/thumbnails/2025/w400/-Markdown-_3T9ZoT.png 400w, /upload/thumbnails/2025/w800/-Markdown-_fq0sO1.png 800w, /upload/thumbnails/2025/w1200/-Markdown-_74eJCh.png 1200w, /upload/thumbnails/2025/w1600/-Markdown-_xBxgIF.png 1600w" sizes="(max-width: 400px) 400px, (max-width: 800px) 800px, (max-width: 1200px) 1200px, (max-width: 1600px) 1600px"></p>
+<p style="">检查文章与图片资源是否导入成功：</p>
+<p style=""><img src="/upload/内容助手-Markdown导入-查看文章.png" width="100%" height="100%" style="display: inline-block" srcset="/upload/thumbnails/2025/w400/-Markdown-_1uQA48.png 400w, /upload/thumbnails/2025/w800/-Markdown-_OSeLsQ.png 800w, /upload/thumbnails/2025/w1200/-Markdown-_5BrbO2.png 1200w, /upload/thumbnails/2025/w1600/-Markdown-_q37vH8.png 1600w" sizes="(max-width: 400px) 400px, (max-width: 800px) 800px, (max-width: 1200px) 1200px, (max-width: 1600px) 1600px"></p>
+<p style=""><img src="/upload/内容助手-Markdown导入-查看附件.png" width="100%" height="100%" style="display: inline-block" srcset="/upload/thumbnails/2025/w800/-Markdown-_l3CWoE.png 800w, /upload/thumbnails/2025/w400/-Markdown-_Hvb329.png 400w, /upload/thumbnails/2025/w1200/-Markdown-_QjhhkG.png 1200w, /upload/thumbnails/2025/w1600/-Markdown-_2Io8bL.png 1600w" sizes="(max-width: 400px) 400px, (max-width: 800px) 800px, (max-width: 1200px) 1200px, (max-width: 1600px) 1600px"></p>
+<h2 style="" id="%E5%AF%BC%E5%85%A5-word-%E6%96%87%E6%A1%A3"><strong>导入 Word 文档</strong></h2>
+<p style="">进入 <strong>文章导入</strong> 页面后，选择 <strong>Word（.docx）导入</strong> 选项卡，如下图：</p>
+<p style=""><img src="/upload/内容助手-Word导入-界面.png" width="100%" height="100%" style="display: inline-block" srcset="/upload/thumbnails/2025/w400/-Word-.png 400w, /upload/thumbnails/2025/w800/-Word-.png 800w, /upload/thumbnails/2025/w1200/-Word-.png 1200w, /upload/thumbnails/2025/w1600/-Word-.png 1600w" sizes="(max-width: 400px) 400px, (max-width: 800px) 800px, (max-width: 1200px) 1200px, (max-width: 1600px) 1600px"></p>
+<h3 style="" id="%E5%8A%9F%E8%83%BD%E8%AF%A6%E8%A7%A3-1"><strong>功能详解</strong></h3>
+<ol>
+ <li>
+  <p style=""><strong>选择 Word 文档</strong>：用于选择单个 Word 文档，支持 <code>.doc</code> 和 <code>.docx</code> 格式。</p>
+ </li>
+ <li>
+  <p style=""><strong>选择 Word 文档文件夹</strong>：用于批量选择包含 Word 文档的文件夹。</p>
+ </li>
+ <li>
+  <p style=""><strong>转为 Markdown 格式</strong>：默认情况下，导入的 Word 文档会转换为富文本格式。如果希望后续使用 Markdown 编辑器编辑文章，请勾选此选项将内容转换为 Markdown 格式。</p>
+ </li>
+</ol>
+<h3 style="" id="%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF-1"><strong>使用场景</strong></h3>
+<ul>
+ <li>
+  <p style="">将公司内部的 Word 文档转换为博客文章</p>
+ </li>
+ <li>
+  <p style="">配合 <hyperlink-inline-card target="_blank" href="https://maxkb.cn/" theme="inline" custom-title="MaxKB"><a href="https://maxkb.cn/" target="_blank">https://maxkb.cn/</a></hyperlink-inline-card> 智能知识库，建立企业知识管理体系</p>
+ </li>
+ <li>
+  <p style="">从传统文档工具迁移内容到现代化的管理平台</p>
+ </li>
+</ul>
+<h3 style="" id="%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9-1"><strong>注意事项</strong></h3>
+<ol>
+ <li>
+  <p style="">由于 Word 文档格式的复杂性，系统可能无法完美解析所有内容格式，建议导入后进行适当调整。</p>
+ </li>
+ <li>
+  <p style="">系统支持自动导入 Word 文档中的图片资源，但其他类型的嵌入对象暂不支持。</p>
+ </li>
+ <li>
+  <p style="">图片会上传到与个人中心关联的存储策略，请提前在用户设置中配置相关参数。</p>
+ </li>
+</ol>
+<h3 style="" id="%E6%93%8D%E4%BD%9C%E7%A4%BA%E4%BE%8B-1"><strong>操作示例</strong></h3>
+<p style="">选择 Word 文档：</p>
+<p style=""><img src="/upload/内容助手-Word导入-选择文件.png" width="100%" height="100%" style="display: inline-block" srcset="/upload/thumbnails/2025/w800/-Word-_nOCBT0.png 800w, /upload/thumbnails/2025/w1200/-Word-_ggx4mD.png 1200w, /upload/thumbnails/2025/w400/-Word-_0V5adL.png 400w, /upload/thumbnails/2025/w1600/-Word-_fCrbWZ.png 1600w" sizes="(max-width: 400px) 400px, (max-width: 800px) 800px, (max-width: 1200px) 1200px, (max-width: 1600px) 1600px"></p>
+<p style="">点击导入，等待导入完成：</p>
+<p style=""><img src="/upload/内容助手-Word导入-导入成功.png" width="100%" height="100%" style="display: inline-block" srcset="/upload/thumbnails/2025/w400/-Word-_KpSuKv.png 400w, /upload/thumbnails/2025/w800/-Word-_J6zo3T.png 800w, /upload/thumbnails/2025/w1200/-Word-_QguHlC.png 1200w, /upload/thumbnails/2025/w1600/-Word-_CHElLZ.png 1600w" sizes="(max-width: 400px) 400px, (max-width: 800px) 800px, (max-width: 1200px) 1200px, (max-width: 1600px) 1600px"></p>
+<p style="">检查文章是否导入成功：</p>
+<p style=""><img src="/upload/内容助手-Word导入-查看文章.png" width="991px" height="Infinitypx" style="display: inline-block" srcset="/upload/thumbnails/2025/w1200/-Word-_j0ILeH.png 1200w, /upload/thumbnails/2025/w1600/-Word-_bqFNdh.png 1600w, /upload/thumbnails/2025/w400/-Word-_06PXyj.png 400w, /upload/thumbnails/2025/w800/-Word-_LsjfxL.png 800w" sizes="(max-width: 400px) 400px, (max-width: 800px) 800px, (max-width: 1200px) 1200px, (max-width: 1600px) 1600px"></p>
+<p style=""><img src="/upload/内容助手-Word导入-查看附件.png" width="100%" height="100%" style="display: inline-block" srcset="/upload/thumbnails/2025/w400/-Word-_GxGOXo.png 400w, /upload/thumbnails/2025/w800/-Word-_Q9X28Y.png 800w, /upload/thumbnails/2025/w1200/-Word-_P7sXw3.png 1200w, /upload/thumbnails/2025/w1600/-Word-_FhvCVB.png 1600w" sizes="(max-width: 400px) 400px, (max-width: 800px) 800px, (max-width: 1200px) 1200px, (max-width: 1600px) 1600px"></p>
+<h2 style="" id="%E4%B8%B0%E5%AF%8C%E7%9A%84%E5%86%85%E5%AE%B9%E7%AE%A1%E7%90%86%E5%8A%9F%E8%83%BD"><strong>丰富的内容管理功能</strong></h2>
+<p style="">除了核心的导入功能，内容助手还提供了丰富的内容管理功能：</p>
+<h3 style="" id="%E6%A0%BC%E5%BC%8F%E8%BD%AC%E6%8D%A2"><strong>格式转换</strong></h3>
+<p style="">支持 Markdown 与富文本格式的双向转换，让用户可以根据编辑需求灵活切换文档格式。你可以在文章管理页面点击文章的 <code>···</code> 按钮，在转换菜单中选择相应的格式转换选项，也可以在文章编辑页面顶部的编辑器选择框中选择 <strong>内容格式转换器</strong> 进行转换。</p>
+<p style=""><img src="/upload/内容助手-转换格式.png" width="100%" height="100%" style="display: inline-block" srcset="/upload/thumbnails/2025/w400/-_aA6Bga.png 400w, /upload/thumbnails/2025/w800/-_AvCmam.png 800w, /upload/thumbnails/2025/w1200/-_tdIKyn.png 1200w, /upload/thumbnails/2025/w1600/-_rGyYXv.png 1600w" sizes="(max-width: 400px) 400px, (max-width: 800px) 800px, (max-width: 1200px) 1200px, (max-width: 1600px) 1600px"></p>
+<h3 style="" id="%E6%96%87%E7%AB%A0%E5%AF%BC%E5%87%BA"><strong>文章导出</strong></h3>
+<p style="">支持将文章导出为多种格式，方便内容备份和分享：</p>
+<ul>
+ <li>
+  <p style=""><strong>以原格式导出</strong>：保持文章的原始格式进行导出</p>
+ </li>
+ <li>
+  <p style=""><strong>转换为 Markdown 并导出</strong>：将文章转换为 Markdown 格式后导出</p>
+ </li>
+ <li>
+  <p style=""><strong>转换为 PDF 并导出</strong>：将文章转换为 PDF 格式进行导出</p>
+ </li>
+</ul>
+<p style=""><img src="/upload/内容助手-导出.png" width="100%" height="100%" style="display: inline-block" srcset="/upload/thumbnails/2025/w800/-_BWou8z.png 800w, /upload/thumbnails/2025/w1600/-_T8zcOz.png 1600w, /upload/thumbnails/2025/w400/-_Esq2zj.png 400w, /upload/thumbnails/2025/w1200/-_EmT9N5.png 1200w" sizes="(max-width: 400px) 400px, (max-width: 800px) 800px, (max-width: 1200px) 1200px, (max-width: 1600px) 1600px"></p>
+<h3 style="" id="%E6%96%87%E7%AB%A0%E5%85%8B%E9%9A%86"><strong>文章克隆</strong></h3>
+<p style="">提供文章克隆功能，便于基于现有文章创建相似内容。克隆后的文章会自动在标题后添加"（副本）"标识，并生成新的别名以避免冲突。</p>
+<p style=""><img src="/upload/内容助手-克隆.png" width="100%" height="100%" style="display: inline-block" srcset="/upload/thumbnails/2025/w400/-_sNQqtZ.png 400w, /upload/thumbnails/2025/w800/-_hgEE07.png 800w, /upload/thumbnails/2025/w1200/-_tzsLGo.png 1200w, /upload/thumbnails/2025/w1600/-_s1ABBT.png 1600w" sizes="(max-width: 400px) 400px, (max-width: 800px) 800px, (max-width: 1200px) 1200px, (max-width: 1600px) 1600px"></p>
+<p style="">以上功能都可以在文章管理页面点击文章的 <code>···</code> 按钮找到相应选项。</p>
+<h2 style="" id="%E6%80%BB%E7%BB%93"><strong>总结</strong></h2>
+<p style="">内容助手插件为 Halo 用户提供了完整的文档导入和内容管理解决方案，有效解决了 Markdown 和 Word 文档的导入难题。插件不仅支持智能处理图片资源，还提供了格式转换、文章导出、文章克隆、内容复制等丰富功能，能够满足大部分用户的内容管理需求。</p>
+<p style="">无论你是从其他平台迁移内容，还是需要批量导入历史文档，内容助手都能为你提供便捷、高效的解决方案。如果你有文档导入或内容格式转换的需求，欢迎尝试使用内容助手插件。</p></div>
+
+        <div class="my-4 flex flex-wrap items-center gap-1.5">
+          <div class="i-ri-hashtag text-base-content/50"></div>
+          <a
+            href="/tags/halo"
+            class="inline-flex items-center gap-x-1.5 rounded-full bg-purple-100 px-2 py-1 text-xs font-medium text-purple-700"
+          >
+            #Halo
+            <sup>3</sup>
+          </a>
+        </div>
+
+        <div
+          class="sticky bottom-10 flex items-center justify-center"
+        >
+          <ul
+            class="z-10 flex h-12 items-center gap-2 rounded-full border border-base-content/10 bg-base-100 px-2 py-1.5 shadow-lg"
+          >
+            <li
+              class="group inline-flex h-full cursor-pointer items-center justify-center gap-1.5 rounded-full px-2 hover:bg-base-200"
+              @click="handleUpvote(name)"
+            >
+              <div x-show="upvoted(name)" class="i-ri-heart-3-fill text-red-700"></div>
+              <div
+                x-show="!upvoted(name)"
+                class="i-ri-heart-3-line text-base-content/70 group-hover:text-red-600"
+              ></div>
+              <span
+                class="text-sm text-base-content/70"
+                data-upvote-post-name="f75e2c4d-2e94-472e-8e3a-59bd5eb7d2d9"
+              >4</span>
+            </li>
+            <li
+              class="group inline-flex h-full cursor-pointer items-center rounded-full px-2 hover:bg-base-200"
+            >
+              <a class="inline-flex size-full items-center justify-center gap-1.5" href="#post-comment">
+                <div class="i-ri-message-3-line text-base-content/70"></div>
+                <span class="text-sm text-base-content/70">1</span>
+              </a>
+            </li>
+            
+            <li
+              class="group inline-flex h-full cursor-pointer items-center justify-center gap-1.5 rounded-full px-2 hover:bg-base-200"
+              @click="shareModal = true" x-data="share([&quot;wechat&quot;,&quot;x&quot;,&quot;telegram&quot;,&quot;facebook&quot;,&quot;qq&quot;,&quot;qzone&quot;,&quot;weibo&quot;,&quot;douban&quot;,&quot;native&quot;])"
+            >
+              <div class="i-ri-share-line text-base-content/70"></div>
+              <template x-teleport="body">
+  <div>
+    <div
+      class="fixed inset-0 z-50 bg-[#0006] opacity-100 backdrop-blur-sm"
+      aria-hidden="true"
+      x-show="shareModal"
+      x-transition:enter="ease-in-out duration-300"
+      x-transition:enter-start="opacity-0"
+      x-transition:enter-end="opacity-100"
+      x-transition:leave="ease-in-out duration-300"
+      x-transition:leave-start="opacity-100"
+      x-transition:leave-end="opacity-0"
+    ></div>
+    <div
+      class="fixed inset-0 z-50 overflow-y-auto"
+      tabindex="-1"
+      x-show="shareModal"
+      x-transition:enter="ease-out duration-200"
+      x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+      x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100"
+      x-transition:leave="ease-in duration-100"
+      x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100"
+      x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+    >
+      <div class="flex min-h-full flex-col items-center justify-center p-4 text-center sm:p-0">
+        <div
+          @click.outside="shareModal = false"
+          class="relative my-4 transform overflow-hidden rounded-lg bg-base-100 p-4 text-left shadow-xl transition-all sm:w-full sm:max-w-xl"
+        >
+          <h1 class="text-lg font-semibold">分享</h1>
+          <div class="my-8">
+            <div class="grid grid-cols-5 gap-6 sm:grid-cols-6">
+              <template x-for="item in activeShareItems">
+                <div class="inline-flex flex-col items-center justify-center gap-1.5 rounded-full">
+                  <div
+                    class="inline-flex size-12 cursor-pointer items-center justify-center rounded-full bg-base-200 transition-all hover:bg-base-300 sm:size-16"
+                    @click="handleShare(item.id)"
+                  >
+                    <div class="text-xl text-base-content" :class="item.icon"></div>
+                  </div>
+                  <div class="text-base-content/60˝ hidden text-xs sm:block" x-text="item.name"></div>
+                </div>
+              </template>
+            </div>
+            <div class="mt-10">
+              <div
+                class="flex flex-wrap items-center justify-center gap-1 rounded-lg bg-base-200 px-3 py-2 sm:justify-between"
+              >
+                <div class="select-all text-xs font-light text-base-content/60" x-text="permalink"></div>
+                <div
+                  class="cursor-pointer select-none text-sm text-base-content/60 hover:text-base-content"
+                  @click="handleCopy"
+                  x-text="copied ? '已复制':'复制'"
+                ></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div
+            @click="shareModal = false"
+            class="group inline-flex cursor-pointer items-center justify-center rounded-full bg-base-100 p-1.5"
+          >
+            <i class="i-ri-close-line block text-base-content/60 group-hover:text-base-content"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+            </li>
+          </ul>
+        </div>
+
+        <div class="flex justify-between py-8">
+          <div class="w-1/2 pr-4">
+            <a
+              href="/archives/halo-meilisearch"
+              title="使用 Meilisearch 提升 Halo 网站的搜索体验"
+            >
+              <div
+                class="inline-flex items-center gap-1 border-b-2 border-b-transparent text-sm text-base-content/90 hover:border-base-content hover:text-base-content"
+              >
+                <i class="i-ri-arrow-left-line inline-block flex-none"></i>
+                <span class="flex-1 shrink break-all">使用 Meilisearch 提升 Halo 网站的搜索体验</span>
+              </div>
+            </a>
+          </div>
+          <div class="w-1/2 pl-4 text-right">
+            <a
+              href="/archives/1panel-mcp"
+              title="通过 1Panel MCP 自动部署静态网站"
+            >
+              <div
+                class="inline-flex items-center gap-1 border-b-2 border-b-transparent text-sm text-base-content/90 hover:border-base-content hover:text-base-content"
+              >
+                <span class="flex-1 shrink break-all">通过 1Panel MCP 自动部署静态网站</span>
+                <i class="i-ri-arrow-right-line inline-block flex-none"></i>
+              </div>
+            </a>
+          </div>
+        </div>
+        <div id="post-comment" class="comment-widget">
+          <div id="comment-content-halo-run-Post-f75e2c4d-2e94-472e-8e3a-59bd5eb7d2d9"></div>
+<script type="module" data-pjax>
+  import { init } from "/plugins/PluginCommentWidget/assets/static/comment-widget.js?version=3.1.0-dev.1";
+  init(
+    "#comment-content-halo-run-Post-f75e2c4d-2e94-472e-8e3a-59bd5eb7d2d9",
+    {
+      group: "content.halo.run",
+      kind: "Post",
+      name: "f75e2c4d-2e94-472e-8e3a-59bd5eb7d2d9",
+    }
+  );
+</script>
+
+        </div>
+      </div>
+    </div>
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        generateToc();
+      });
+    </script>
+  
+    <footer class="mt-10 space-y-2 bg-base-100 py-8">
+  <hr class="my-6 border-base-content/5 sm:mx-auto lg:my-8" />
+  <span class="container mx-auto block text-center text-sm text-base-content/70">
+    ©
+    2025
+    <a href="/">Ryan Wang&#39;s Blog</a> Powered by
+<a href="https://www.halo.run" class="hover:text-base-content" target="_blank">Halo</a> Theme
+<a href="https://www.halo.run/store/apps/app-GHgAR" target="_blank" class="hover:text-base-content">Walker</a>
+
+  </span>
+  <span class="container mx-auto block text-center text-sm text-base-content/70">
+    <a href="https://beian.miit.gov.cn" target="_blank">蜀ICP备2022010816号
+</a>
+
+<script>
+console.log("%c    __  __      __\n" +
+                "   / / / /___ _/ /___\n" +
+                "  / /_/ / __ `/ / __ \\\n" +
+                " / __  / /_/ / / /_/ /\n" +
+                "/_/ /_/\\__,_/_/\\____/ %c v2.21 🌚 https://github.com/halo-dev/halo","color:#4571ca;","color:red");
+</script>
+
+  </span>
+</footer>
+
+
+    <button
+      type="button"
+      id="btn-scroll-to-top"
+      class="duration-300 fixed bottom-5 right-5 flex items-center justify-center rounded-full bg-neutral p-3 opacity-0 shadow transition-all hover:opacity-70 hover:shadow-lg lg:bottom-10 lg:right-10"
+    >
+      <span class="i-tabler-chevron-up text-2xl text-neutral-content"></span>
+    </button>
+  </body>
+</html>

@@ -1,0 +1,34 @@
+<div xmlns:th="https://www.thymeleaf.org"
+    th:fragment="widget (sidebar)"
+    th:class="'card widget github-projects ' + ${sidebar.hide}">
+  <div class="card-title">
+    <i th:class="${#strings.defaultString(sidebar.icon, 'ri-open-source-line') + ' card-title-label'}"></i>
+    <span th:text="${#strings.defaultString(sidebar.title, '小项目 (☆.☆)')}"></span>
+  </div>
+  <div th:if="${#lists.isEmpty(theme.config.github.projects)}" class="card-empty">暂无项目</div>
+  <div th:unless="${#lists.isEmpty(theme.config.github.projects)}" class="card-content">
+    <div class="project-list">
+      <a th:each="project : ${theme.config.github.projects}" 
+         class="project-item" 
+         th:href="${project.url}" 
+         target="_blank"
+         rel="noopener noreferrer">
+        <div class="project-name">
+          <i class="ri-github-fill"></i>
+          <span th:text="${project.name}"></span>
+        </div>
+        <p th:if="${!#strings.isEmpty(project.description)}" class="project-desc" th:text="${project.description}"></p>
+        <div class="project-meta">
+          <span th:if="${!#strings.isEmpty(project.language)}" class="project-lang">
+            <i class="ri-code-s-slash-line"></i>
+            <span th:text="${project.language}"></span>
+          </span>
+          <span th:if="${!#strings.isEmpty(project.stars)}" class="project-stars">
+            <i class="ri-star-line"></i>
+            <span th:text="${project.stars}"></span>
+          </span>
+        </div>
+      </a>
+    </div>
+  </div>
+</div>
