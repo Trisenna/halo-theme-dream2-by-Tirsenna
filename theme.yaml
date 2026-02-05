@@ -1,0 +1,45 @@
+apiVersion: theme.halo.run/v1alpha1
+kind: Theme
+metadata:
+  # 主题id，唯一
+  name: theme-dream
+spec:
+  # 主题名称
+  displayName: Dream
+  author:
+    # 作者名称
+    name: nineya
+    # 作者网址
+    website: https://blog.nineya.com
+  # 主题描述
+  description: '梦之城，童话梦境'
+  # 主题logo地址
+  logo: /themes/theme-dream/assets/img/logo.png
+  # 主题地址
+  website: https://github.com/nineya/halo-theme-dream2.0
+  # 主题github开源地址
+  repo: https://github.com/nineya/halo-theme-dream2.0.git
+  settingName: theme-dream-setting
+  configMapName: theme-dream-configMap
+  # 版本号
+  version: 1.3.4
+  # 最低支持的 Halo 版本
+  require: ">=2.0.0"
+  customTemplates:
+    page:
+      - name: 搜索
+        description: 搜索页面模板
+        screenshot:
+        file: search.html
+      - name: 关于我
+        description: 搜索页面模板
+        screenshot:
+        file: about.html
+      - name: 安利
+        description: 我推的模板
+        screenshot:
+        file: mylikes.html
+      - name: 订阅
+        description: 我推的模板
+        screenshot:
+        file: friends.html

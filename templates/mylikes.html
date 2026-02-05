@@ -1,0 +1,107 @@
+<html lang="zh" xmlns:th="https://www.thymeleaf.org"
+      th:replace="~{common/layout :: layout (
+        title = '我推的 - ' + ${site.title},
+        canonical = ${singlePage.status.permalink},
+        content = ~{::content},
+        isPost = false
+      )}">
+
+<th:block th:fragment="content">
+  <link rel="stylesheet" th:href="@{/assets/css/like.css(mew=${theme.spec.version})}">
+
+  <div class="card like-page-container">
+    <!-- 我推的老婆 -->
+    <th:block th:if="${theme.config.likes.waifus != null and !#lists.isEmpty(theme.config.likes.waifus)}">
+      <div class="like-section">
+        <h2 class="like-title is-centered"><i class="ri-heart-3-fill"></i> 我推的孩子</h2>
+        <div class="waifu-grid">
+          <div class="waifu-card-wrap" th:each="waifu : ${theme.config.likes.waifus}">
+            <div class="waifu-card">
+              <div class="waifu-bg" th:style="'background-image: url(' + ${waifu.cover} + ')'"></div>
+              <div class="waifu-content">
+                <img class="waifu-avatar" th:src="${waifu.avatar}" th:alt="${waifu.name}">
+                <div class="waifu-info">
+                  <p class="waifu-name" th:text="${waifu.name}"></p>
+                  <p class="waifu-source" th:text="${waifu.source}"></p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </th:block>
+
+    <!-- 我推的番剧/小说/游戏 -->
+    <div class="like-section">
+      <div class="like-tabs">
+        <div class="like-tab active" data-tab="anime"><i class="ri-tv-2-line"></i> 我推的番剧</div>
+        <div class="like-tab" data-tab="novel"><i class="ri-book-3-line"></i> 我推的小说</div>
+        <div class="like-tab" data-tab="game"><i class="ri-gamepad-line"></i> 我推的游戏</div>
+      </div>
+
+      <div class="like-tab-content active" id="anime">
+        <div class="ranked-list">
+          <th:block th:if="${theme.config.likes.animes != null and !#lists.isEmpty(theme.config.likes.animes)}" th:each="item : ${theme.config.likes.animes}">
+            <div class="ranked-item">
+              <a th:href="${item.url}" target="_blank" class="ranked-item-cover-link">
+                <img class="ranked-item-cover" th:src="${item.cover}" th:alt="${item.title}">
+                <div class="item-status" th:text="${item.status}"></div>
+              </a>
+              <div class="ranked-item-info">
+                <a th:href="${item.url}" target="_blank"><h3 class="ranked-item-title" th:text="${item.title}"></h3></a>
+                <p class="ranked-item-desc" th:text="${item.description}"></p>
+                <div class="ranked-item-tags">
+                  <span class="tag" th:each="tag : ${#strings.arraySplit(item.tags, ',')}" th:text="${tag}"></span>
+                </div>
+              </div>
+            </div>
+          </th:block>
+        </div>
+      </div>
+
+      <div class="like-tab-content" id="novel">
+        <div class="ranked-list">
+          <th:block th:if="${theme.config.likes.novels != null and !#lists.isEmpty(theme.config.likes.novels)}" th:each="item : ${theme.config.likes.novels}">
+             <div class="ranked-item">
+              <a th:href="${item.url}" target="_blank" class="ranked-item-cover-link">
+                <img class="ranked-item-cover" th:src="${item.cover}" th:alt="${item.title}">
+                <div class="item-status" th:text="${item.status}"></div>
+              </a>
+              <div class="ranked-item-info">
+                <a th:href="${item.url}" target="_blank"><h3 class="ranked-item-title" th:text="${item.title}"></h3></a>
+                <p class="ranked-item-desc" th:text="${item.description}"></p>
+                <div class="ranked-item-tags">
+                  <span class="tag" th:each="tag : ${#strings.arraySplit(item.tags, ',')}" th:text="${tag}"></span>
+                </div>
+              </div>
+            </div>
+          </th:block>
+        </div>
+      </div>
+
+      <div class="like-tab-content" id="game">
+        <div class="ranked-list">
+          <th:block th:if="${theme.config.likes.games != null and !#lists.isEmpty(theme.config.likes.games)}" th:each="item : ${theme.config.likes.games}">
+            <div class="ranked-item">
+              <a th:href="${item.url}" target="_blank" class="ranked-item-cover-link">
+                <img class="ranked-item-cover" th:src="${item.cover}" th:alt="${item.title}">
+                <div class="item-status" th:text="${item.status}"></div>
+              </a>
+              <div class="ranked-item-info">
+                <a th:href="${item.url}" target="_blank"><h3 class="ranked-item-title" th:text="${item.title}"></h3></a>
+                <p class="ranked-item-desc" th:text="${item.description}"></p>
+                <div class="ranked-item-tags">
+                  <span class="tag" th:each="tag : ${#strings.arraySplit(item.tags, ',')}" th:text="${tag}"></span>
+                </div>
+              </div>
+            </div>
+          </th:block>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script th:src="@{/assets/js/like.js(mew=${theme.spec.version})}"></script>
+</th:block>
+</html>

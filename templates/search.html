@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org" 
+      th:replace="~{common/layout :: layout(
+        title = '搜索 - ' + ${site.title},
+        canonical = ${singlePage.status.permalink},
+        content = ~{::content},
+        isPost = false
+      )}">
+<th:block th:fragment="content">
+    <div id="search-page" class="search-page">
+        <!-- 隐藏搜索标题区域（保留 DOM 供 JS 使用） -->
+        <div class="card widget search-header" style="display: none !important;">
+            <div class="card-content">
+                <nav class="breadcrumb" aria-label="breadcrumbs">
+                    <ul>
+                        <li><a th:href="@{/}"><i class="ri-home-4-line"></i>首页</a></li>
+                        <li class="is-active">搜索结果</li>
+                    </ul>
+                </nav>
+                <h1 class="title" id="search-title">
+                    <i class="ri-search-line"></i>
+                    <span>搜索</span>
+                </h1>
+            </div>
+        </div>
+        
+        <div id="search-results" class="search-results">
+            <!-- 结果将由 JavaScript 动态加载 -->
+        </div>
+        
+        <div id="search-pagination" class="pagination">
+            <!-- 分页将由 JavaScript 动态生成 -->
+        </div>
+    </div>
+    
+    <!-- 搜索页面脚本（已移除关键词高亮） -->
+    <script data-pjax>
+    (function() {
+        // 获取搜索关键词
+        const params = new URLSearchParams(window.location.search);
+        const keyword = params.get('keyword');
+        
+        // 更新标题显示
+        const titleEl = document.getElementById('search-title');
+        if (keyword) {
+            titleEl.innerHTML = '<i class="ri-search-line"></i> 搜索：<em style="color: var(--theme)">' + keyword + '</em>';
+            document.title = '搜索：' + keyword + ' - ' + document.title.split(' - ').pop();
+        }
+        
+        // 如果没有关键词
+        if (!keyword) {
+            document.getElementById('search-results').innerHTML = 
+                '<div class="card card-empty"><i class="ri-search-line"></i>请输入搜索关键词</div>';
+            return;
+        }
+        
+        // 显示加载状态
+        document.getElementById('search-results').innerHTML = 
+            '<div class="card"><div class="card-content" style="text-align: center;"><i class="ri-loader-4-line"></i> 搜索中...</div></div>';
+        
+        const page = parseInt(params.get('page') || '1');
+        const size = 20;
+        
+        // 调用搜索API
+        fetch('/apis/api.content.halo.run/v1alpha1/posts?keyword=' + encodeURIComponent(keyword) + '&page=' + (page - 1) + '&size=' + size)
+            .then(res => res.json())
+            .then(data => {
+                renderSearchResults(data, keyword, page, size);
+            })
+            .catch(err => {
+                console.error('搜索失败:', err);
+                document.getElementById('search-results').innerHTML = 
+                    '<div class="card card-empty"><i class="ri-error-warning-line"></i>搜索失败，请稍后重试</div>';
+            });
+    })();
+    
+    function renderSearchResults(data, keyword, currentPage, pageSize) {
+        const resultsContainer = document.getElementById('search-results');
+        
+        if (!data || !data.items || data.items.length === 0) {
+            resultsContainer.innerHTML = '<div class="card card-empty"><i class="ri-emotion-unhappy-line"></i>未找到相关文章</div>';
+            return;
+        }
+        
+        let html = '';
+        data.items.forEach(function(post) {
+            const thumbnail = post.spec?.cover || '';
+            const title = post.spec?.title || '无标题';
+            const excerpt = post.status?.excerpt || '暂无摘要';
+            const permalink = post.status?.permalink || '/archives/' + post.metadata?.name;
+            const publishTime = post.spec?.publishTime ? new Date(post.spec.publishTime).toLocaleDateString('zh-CN') : '';
+            const stats = post.stats || {};
+            
+            // 使用主题的文章卡片样式
+            if (thumbnail) {
+                html += '<div class="card widget card-small">';
+                html += '<a href="' + permalink + '"><div class="small-image" style="background-image: url(' + thumbnail + ')"></div></a>';
+                html += '<div class="card-content main">';
+            } else {
+                html += '<div class="card widget"><div class="card-content main">';
+            }
+            
+            // ❌ 不再高亮关键词：直接使用原始 title 和 excerpt
+            html += '<h2 class="title"><a href="' + permalink + '">' + title + '</a></h2>';
+            html += '<div class="meta"><ul class="breadcrumb">';
+            html += '<li>' + publishTime + '</li>';
+            html += '<li><i class="ri-eye-line"></i>' + (stats.visit || 0) + '</li>';
+            html += '<li><i class="ri-thumb-up-line"></i>' + (stats.upvote || 0) + '</li>';
+            html += '</ul></div><hr/>';
+            html += '<div class="main-content">' + excerpt + '</div>';
+            html += '</div></div>';
+        });
+        
+        resultsContainer.innerHTML = html;
+        
+        // 渲染分页
+        const totalPages = Math.ceil((data.total || data.items.length) / pageSize);
+        if (totalPages > 1) {
+            renderPagination(currentPage, totalPages, keyword);
+        }
+    }
+    
+    function renderPagination(current, total, keyword) {
+        let html = '<div class="card card-transparent"><nav class="pagination">';
+        
+        if (current > 1) {
+            html += '<a href="?keyword=' + encodeURIComponent(keyword) + '&page=' + (current - 1) + '" class="pagination-previous">上一页</a>';
+        } else {
+            html += '<a class="pagination-previous is-invisible">上一页</a>';
+        }
+        
+        if (current < total) {
+            html += '<a href="?keyword=' + encodeURIComponent(keyword) + '&page=' + (current + 1) + '" class="pagination-next">下一页</a>';
+        } else {
+            html += '<a class="pagination-next is-invisible">下一页</a>';
+        }
+        
+        html += '<ul class="pagination-list is-hidden-mobile">';
+        for (let i = 1; i <= Math.min(total, 9); i++) {
+            if (i === current) {
+                html += '<li><a class="pagination-link is-current">' + i + '</a></li>';
+            } else {
+                html += '<li><a href="?keyword=' + encodeURIComponent(keyword) + '&page=' + i + '" class="pagination-link">' + i + '</a></li>';
+            }
+        }
+        html += '</ul></nav></div>';
+        
+        document.getElementById('search-pagination').innerHTML = html;
+    }
+    
+    // ✅ 高亮函数已不再使用，但为保持结构完整可保留（或删除）
+    // 实际上 renderSearchResults 中已直接使用原始文本，不调用此函数
+    function highlightKeyword(text, keyword) {
+        return text; // 即使被调用，也不高亮
+    }
+    </script>
+</th:block>
+</html>

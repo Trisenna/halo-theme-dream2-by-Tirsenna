@@ -1,0 +1,372 @@
+<th:block th:replace="~{common/layout :: layout(title = ${singlePage.spec.title}, canonical = ${singlePage.status.permalink}, content = ~{::content}, isPost = false)}">
+  <th:block th:fragment="content">
+    <!-- Custom Styles for About Page -->
+    <style>
+      .about-page-container {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+      }
+
+      .integrated-cards-section {
+        display: flex;
+        width: 100%;
+        height: 320px;
+        gap: 0.75rem;
+      }
+
+      .integrated-card {
+        position: relative;
+        flex: 1;
+        border-radius: 40px;
+        overflow: hidden;
+        cursor: pointer;
+        transition: flex 0.6s cubic-bezier(0.65, 0, 0.35, 1);
+        border: 2px solid var(--light-b);
+      }
+
+      .integrated-card.active {
+        flex: 6;
+      }
+
+      .integrated-card .card-background {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.5s ease;
+        z-index: 1;
+      }
+
+      .integrated-card:hover .card-background {
+        transform: scale(1.05);
+      }
+
+      .integrated-card .card-content {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        padding: 20px;
+        color: white;
+        height: 100%;
+        background: linear-gradient(to top, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0.4) 30%, transparent 60%);
+        z-index: 2;
+        overflow: hidden;
+      }
+
+      /* 头像：绝对定位，默认居中，展开时移到左侧 */
+      .integrated-card .card-avatar {
+        position: absolute;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        border: 3px solid rgba(255, 255, 255, 0.8);
+        object-fit: cover;
+        transition: left 0.6s cubic-bezier(0.65, 0, 0.35, 1), 
+                    transform 0.6s cubic-bezier(0.65, 0, 0.35, 1);
+      }
+
+      /* 展开状态：头像移到左侧 */
+      .integrated-card.active .card-avatar {
+        left: 20px;
+        transform: translateX(0);
+      }
+
+      /* 文字详情：绝对定位，固定宽度，淡入滑动效果 */
+      .integrated-card .card-details {
+        position: absolute;
+        bottom: 15px;
+        left: 90px;
+        width: 500px;
+        opacity: 0;
+        transform: translateX(30px);
+        transition: opacity 0.5s ease 0.15s, 
+                    transform 0.5s ease 0.15s;
+        pointer-events: none;
+      }
+
+      /* 展开状态：文字显示 */
+      .integrated-card.active .card-details {
+        opacity: 1;
+        transform: translateX(0);
+        pointer-events: auto;
+      }
+
+      .integrated-card .card-details h3 {
+        margin: 0 0 8px 0;
+        color: #fff;
+        font-size: 1.3rem;
+        font-weight: 600;
+        text-shadow: 1px 1px 3px rgba(0,0,0,0.8);
+      }
+      .integrated-card .card-details p {
+        margin: 0;
+        line-height: 1.6;
+        font-size: 0.9rem;
+        color: rgba(255,255,255,0.95);
+        text-shadow: 1px 1px 2px rgba(0,0,0,0.6);
+        /* 限制显示行数 */
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+      }
+      
+      .about-section {
+          background-color: var(--bg-d);
+          border: 1px solid var(--light-b);
+          border-radius: var(--radius-wrap);
+          overflow: hidden;
+      }
+      .about-section-header {
+          display: flex;
+          align-items: center;
+          padding: 1rem 1.5rem;
+          cursor: pointer;
+      }
+      .about-section-header .header-icon {
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          margin-right: 1rem;
+      }
+       .about-section-header .header-info { flex-grow: 1; }
+      .about-section-header .header-info .title { font-size: 1.3rem; color: var(--dark-c); margin: 0; }
+       .about-section-header .header-info .subtitle { font-size: 0.9rem; color: var(--dark-b); margin: 0; }
+      .toggle-icon { font-size: 1.5rem; transition: transform 0.3s ease; }
+      .about-section.open .toggle-icon { transform: rotate(90deg); }
+      .about-section-content { max-height: 0; overflow: hidden; transition: max-height 0.5s ease-in-out; }
+       .about-section.open .about-section-content { max-height: 3000px; }
+      .about-section-content .content-inner { padding: 0 1.5rem 1.5rem 1.5rem; }
+      .about-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; }
+      .grid-item { display: flex; align-items: center; background-color: var(--bg-a); padding: 8px 12px; border-radius: var(--radius-inner); color: var(--main); }
+      .grid-item i { margin-right: 10px; color: var(--theme); }
+      .checklist .check-item { display: flex; align-items: center; margin-bottom: 0.6rem; color: var(--main); }
+      .checklist .check-item i { font-size: 1.2rem; margin-right: 10px; color: var(--theme); }
+      .checklist .check-item.is-heart i { color: #f46c6b; }
+      .contact-list .contact-item { display: flex; align-items: flex-start; margin-bottom: 0.8rem; }
+      .contact-list .contact-item i { font-size: 1.2rem; margin-right: 10px; color: var(--theme); margin-top: 2px; }
+      .contact-list .contact-item .contact-details { flex: 1; }
+      .contact-list .contact-item .contact-details strong { color: var(--dark-c); }
+      .contact-list .contact-item .contact-details p { font-size: 0.9em; color: var(--dark-b); margin: 0; }
+      .game-id-wrapper { display: flex; align-items: center; background-color: var(--bg-b); padding: 4px 8px; border-radius: var(--radius-inner); font-family: monospace; }
+      .game-id-wrapper button { background: none; border: none; cursor: pointer; padding-left: 8px; color: var(--dark-b); }
+       .wife-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 1rem; }
+       .wife-card { position: relative; overflow: hidden; border-radius: var(--radius-wrap); height: 200px; color: #fff; }
+       .wife-card img.wife-bg { width: 100%; height: 100%; object-fit: cover; transition: transform .4s ease; }
+       .wife-card:hover img.wife-bg { transform: scale(1.1); }
+       .wife-card .overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,0.8), transparent 60%); }
+       .wife-card .wife-info { position: absolute; bottom: 0; left: 0; right: 0; padding: 12px; display: flex; align-items: center; gap: 10px; }
+       .wife-card .wife-info img.wife-avatar { width: 40px; height: 40px; border-radius: 50%; border: 2px solid #fff; }
+       .wife-card .wife-info .name { font-size: 1.1rem; font-weight: 500; }
+
+      @media (max-width: 992px) {
+        .integrated-cards-section { height: 280px; }
+      }
+      @media (max-width: 768px) {
+        .integrated-cards-section { height: 250px; }
+        .integrated-card { border-radius: 20px; }
+        .integrated-card .card-avatar { 
+          width: 44px; 
+          height: 44px; 
+          bottom: 15px;
+        }
+        .integrated-card.active .card-avatar {
+          left: 15px;
+        }
+        .integrated-card .card-details { 
+          left: 70px; 
+          width: 350px;
+          bottom: 12px;
+        }
+        .integrated-card .card-details h3 { font-size: 1.1rem; }
+        .integrated-card .card-details p { font-size: 0.8rem; -webkit-line-clamp: 2; }
+      }
+    </style>
+
+    <div class="about-page-container">
+      <!-- HTML内容部分保持不变 -->
+      <div class="card">
+        <div class="card-content">
+          <div class="integrated-cards-section" th:if="${!#lists.isEmpty(theme.config.about_page.info_cards)}">
+            <th:block th:each="card, status : ${theme.config.about_page.info_cards}">
+              <div class="integrated-card" th:classappend="${status.first ? 'active' : ''}">
+                <img th:src="${card.background_image}" class="card-background" th:alt="${card.title}">
+                <div class="card-content">
+                  <img th:src="${card.avatar_image}" class="card-avatar" th:alt="${card.title} + ' Avatar'">
+                  <div class="card-details">
+                    <h3 th:text="${card.title}"></h3>
+                    <p th:text="${card.description}"></p>
+                  </div>
+                </div>
+              </div>
+            </th:block>
+          </div>
+        </div>
+      </div>
+
+      <div class="about-section open" id="intro-accordion">
+        <div class="about-section-header">
+          <img th:src="${contributor.avatar}" class="header-icon" alt="Avatar">
+          <div class="header-info">
+            <h2 class="title">Tirsenna</h2>
+            <p class="subtitle">你好啊，我是Tirsenna，你也可以叫我三七，让我简单的介绍一下自己吧(｡◝ᴗ◜｡)</p>
+          </div>
+          <i class="ri-arrow-down-s-line toggle-icon"></i>
+        </div>
+        <div class="about-section-content">
+          <div class="content-inner">
+            <div class="about-grid">
+              <div class="grid-item"><i class="ri-user-line"></i><span>Tirsenna / 三七</span></div>
+              <div class="grid-item"><i class="ri-mail-line"></i><span>2834136003@qq.com</span></div>
+              <div class="grid-item"><i class="ri-graduation-cap-line"></i><span>硕士（在线卑微）</span></div>
+              <div class="grid-item"><i class="ri-ai-line"></i><span>方向：大模型(maybe)</span></div>
+            </div>
+
+            <mew-subtitle style="margin-top: 1.5rem;"><span>自述</span></mew-subtitle>
+            <div class="checklist" style="margin-top: 1rem;" th:if="${!#lists.isEmpty(theme.config.about_page.self_description_items)}">
+              <div th:each="item : ${theme.config.about_page.self_description_items}" class="check-item" th:classappend="${item.is_heart == true ? 'is-heart' : ''}">
+                <i th:class="${item.is_heart == true ? 'ri-heart-fill' : 'ri-checkbox-circle-line'}"></i>
+                <span th:text="${item.text}"></span>
+              </div>
+            </div>
+            <!-- 其他被注释的HTML内容 -->
+          </div>
+        </div>
+      </div>
+      
+      <div class="about-section open" id="waifu-accordion" th:if="${!#lists.isEmpty(theme.config.about_page.favorite_characters)}">
+           <div class="about-section-header">
+              <div class="header-info" style="text-align: center;">
+                 <h2 class="title">💕 我推的老婆</h2>
+              </div>
+           </div>
+           <div class="about-section-content">
+             <div class="content-inner">
+                <div class="wife-grid">
+                     <div class="wife-card" th:each="wife : ${theme.config.about_page.favorite_characters}">
+                         <img th:src="${wife.background_image}" class="wife-bg" th:alt="${wife.name}">
+                         <div class="overlay"></div>
+                         <div class="wife-info">
+                             <img th:src="${wife.avatar_image}" class="wife-avatar" th:alt="${wife.name} + ' avatar'">
+                             <span class="name" th:text="${wife.name}"></span>
+                         </div>
+                     </div>
+                 </div>
+             </div>
+           </div>
+       </div>
+    </div>
+
+    <!--/******************************************************************
+     *
+     *  JavaScript for Interactivity (FINAL ROBUST SOLUTION)
+     *  This script handles both initial page load and dynamic (AJAX/PJAX)
+     *  page updates by observing changes to the DOM.
+     *
+     *******************************************************************/-->
+    <script>
+      /**
+       * 1. The core function that sets up all event listeners for the page.
+       *    It's designed to be safely run multiple times without causing issues.
+       */
+      const initializeAboutPage = () => {
+        // Find the main container for this specific page to ensure the script only runs when needed.
+        const container = document.querySelector('.about-page-container');
+        if (!container) {
+          // If the container is not on the page, do nothing.
+          return;
+        }
+
+        // --- Card Click Logic ---
+        const integratedCards = container.querySelectorAll('.integrated-card');
+        integratedCards.forEach(card => {
+          // A simple way to prevent multiple listeners is to add a marker.
+          if (card.dataset.initialized) return;
+          card.dataset.initialized = 'true';
+
+          card.addEventListener('click', function() {
+            if (this.classList.contains('active')) return;
+            integratedCards.forEach(c => c.classList.remove('active'));
+            this.classList.add('active');
+          });
+        });
+
+        // --- Accordion Toggle Logic ---
+        const accordionHeaders = container.querySelectorAll('.about-section-header');
+        accordionHeaders.forEach(header => {
+          if (header.dataset.initialized) return;
+          header.dataset.initialized = 'true';
+          
+          header.addEventListener('click', () => {
+            header.closest('.about-section').classList.toggle('open');
+          });
+        });
+      };
+
+      /**
+       * 2. Logic to run the initialization.
+       *    We run it once immediately for the initial page load.
+       *    Then, we set up a MutationObserver to watch for future changes.
+       */
+
+      // Run on initial load, slightly delayed to let the browser finish rendering.
+      setTimeout(initializeAboutPage, 0);
+
+      // Create a MutationObserver to watch for when the page content is replaced
+      // by a framework like PJAX or Turbolinks.
+      const observer = new MutationObserver((mutationsList) => {
+        for (const mutation of mutationsList) {
+          // We only care about nodes being added to the page.
+          if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
+            // Check if any of the new nodes is (or contains) our page container.
+            const isPageAdded = Array.from(mutation.addedNodes).some(node =>
+              node.nodeType === 1 && (node.matches('.about-page-container') || node.querySelector('.about-page-container'))
+            );
+
+            if (isPageAdded) {
+              // If the "about" page content was just added, run our setup function again.
+              setTimeout(initializeAboutPage, 0);
+              // We can stop observing for a moment and then restart, or just let it continue.
+              // For simplicity, we'll let it continue observing.
+              break;
+            }
+          }
+        }
+      });
+
+      // Start observing the main content area of your site.
+      // If you don't know the specific ID, observing `document.body` is a safe fallback.
+      // Replace '#main-content' with your theme's actual content wrapper ID if you know it.
+      const targetNode = document.body; 
+      const config = { childList: true, subtree: true };
+      observer.observe(targetNode, config);
+
+      /**
+       * 3. The global copy function remains unchanged as it's called directly from HTML.
+       */
+      function copyToClipboard(elementId) {
+        const text = document.getElementById(elementId).innerText;
+        navigator.clipboard.writeText(text).then(() => {
+          if (window.Qmsg) {
+            Qmsg.success('ID 复制成功!');
+          } else {
+            alert('ID Copied!');
+          }
+        }, (err) => {
+          if (window.Qmsg) {
+            Qmsg.error('复制失败: ' + err);
+          } else {
+            alert('Copy failed!');
+          }
+        });
+      }
+    </script>
+  </th:block>
+</th:block>

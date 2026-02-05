@@ -1,0 +1,12 @@
+<div xmlns:th="https://www.thymeleaf.org"
+    th:fragment="widget (sidebar)"
+    th:class="'card widget github-contributions ' + ${sidebar.hide}"
+    th:if="${!#strings.isEmpty(theme.config.github.github_username)}">
+  <div class="github-chart-container">
+    <img class="github-chart" 
+         th:data-username="${theme.config.github.github_username}"
+         th:data-color="${#strings.replace(theme.config.github.contributions_color, '#', '')}"
+         th:data-night-color="${#strings.replace(theme.config.github.contributions_night_color, '#', '')}"
+         alt="GitHub Contributions" />
+  </div>
+</div>

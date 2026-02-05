@@ -1,0 +1,230 @@
+/**
+ * TOC Enhanced Styles
+ * 目录组件增强样式 - 支持滚动、美化滚动条、适配主题
+ */
+
+/* ===== 核心滚动容器样式 ===== */
+.widget.toc .card-content.toc-content {
+  max-height: calc(100vh - 140px);
+  overflow-y: auto;
+  overflow-x: hidden;
+  scroll-behavior: smooth;
+  position: relative;
+  padding-bottom: 8px;
+  /* 性能优化 */
+  will-change: scroll-position;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* ===== 滚动条美化 - Webkit 浏览器 ===== */
+.widget.toc .toc-content::-webkit-scrollbar {
+  width: 4px;
+}
+
+.widget.toc .toc-content::-webkit-scrollbar-track {
+  background: transparent;
+  border-radius: 4px;
+}
+
+.widget.toc .toc-content::-webkit-scrollbar-thumb {
+  background: var(--theme, #409eff);
+  border-radius: 4px;
+  opacity: 0.6;
+  transition: background 0.3s ease;
+}
+
+.widget.toc .toc-content::-webkit-scrollbar-thumb:hover {
+  background: var(--theme, #409eff);
+  opacity: 1;
+}
+
+/* ===== 滚动条美化 - Firefox ===== */
+.widget.toc .toc-content {
+  scrollbar-width: thin;
+  scrollbar-color: var(--theme, #409eff) transparent;
+}
+
+/* ===== 渐变遮罩容器 ===== */
+.widget.toc {
+  position: relative;
+}
+
+/* 顶部渐变遮罩 - 表示上方有更多内容 */
+.widget.toc .toc-content::before {
+  content: '';
+  position: sticky;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 20px;
+  margin-bottom: -20px;
+  background: linear-gradient(
+    to bottom,
+    var(--background, #fff) 0%,
+    var(--background, #fff) 30%,
+    transparent 100%
+  );
+  pointer-events: none;
+  z-index: 2;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+/* 底部渐变遮罩 - 表示下方有更多内容 */
+.widget.toc .toc-content::after {
+  content: '';
+  position: sticky;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 20px;
+  margin-top: -20px;
+  background: linear-gradient(
+    to top,
+    var(--background, #fff) 0%,
+    var(--background, #fff) 30%,
+    transparent 100%
+  );
+  pointer-events: none;
+  z-index: 2;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+/* 显示渐变遮罩的状态类 */
+.widget.toc .toc-content.can-scroll-up::before {
+  opacity: 1;
+}
+
+.widget.toc .toc-content.can-scroll-down::after {
+  opacity: 1;
+}
+
+/* ===== 目录项样式增强 ===== */
+.widget.toc .menu-list a {
+  transition: all 0.25s ease;
+  border-radius: 4px;
+  margin: 2px 0;
+}
+
+.widget.toc .menu-list a.is-active {
+  background-color: var(--bg-e, #409eff);
+  color: var(--light-a, #fff);
+  font-weight: 500;
+  transform: translateX(2px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.widget.toc .menu-list a:not(.is-active):hover {
+  background-color: var(--bg-c, #f5f5f5);
+  transform: translateX(2px);
+}
+
+/* 目录项图标动画 */
+.widget.toc .menu-list a i {
+  transition: transform 0.25s ease, color 0.25s ease;
+}
+
+.widget.toc .menu-list a.is-active i,
+.widget.toc .menu-list a:hover i {
+  transform: rotate(45deg);
+  color: var(--theme, #409eff);
+}
+
+.widget.toc .menu-list a.is-active i {
+  color: inherit;
+}
+
+/* ===== 响应式设计 ===== */
+
+/* 大屏幕 - 更大的最大高度 */
+@media (min-height: 900px) {
+  .widget.toc .card-content.toc-content {
+    max-height: calc(100vh - 120px);
+  }
+}
+
+/* 平板设备 */
+@media (max-width: 1023px) {
+  .widget.toc .card-content.toc-content {
+    max-height: calc(100vh - 120px);
+  }
+}
+
+/* 移动端抽屉模式下的目录 */
+.navbar-slideout .toc-content {
+  max-height: calc(100vh - 300px);
+  overflow-y: auto;
+  scroll-behavior: smooth;
+}
+
+.navbar-slideout .toc-content::-webkit-scrollbar {
+  width: 3px;
+}
+
+.navbar-slideout .toc-content::-webkit-scrollbar-thumb {
+  background: var(--theme, #409eff);
+  border-radius: 3px;
+}
+
+/* ===== 暗色主题适配 ===== */
+html[data-theme="dark"] .widget.toc .toc-content::before,
+html.dark .widget.toc .toc-content::before {
+  background: linear-gradient(
+    to bottom,
+    var(--background, #1a1a2e) 0%,
+    var(--background, #1a1a2e) 30%,
+    transparent 100%
+  );
+}
+
+html[data-theme="dark"] .widget.toc .toc-content::after,
+html.dark .widget.toc .toc-content::after {
+  background: linear-gradient(
+    to top,
+    var(--background, #1a1a2e) 0%,
+    var(--background, #1a1a2e) 30%,
+    transparent 100%
+  );
+}
+
+html[data-theme="dark"] .widget.toc .menu-list a.is-active,
+html.dark .widget.toc .menu-list a.is-active {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+/* ===== 动画效果 ===== */
+@keyframes toc-highlight {
+  0% {
+    background-color: var(--bg-e, #409eff);
+  }
+  50% {
+    background-color: var(--theme, #409eff);
+  }
+  100% {
+    background-color: var(--bg-e, #409eff);
+  }
+}
+
+.widget.toc .menu-list a.is-active.toc-flash {
+  animation: toc-highlight 0.6s ease;
+}
+
+/* ===== 无内容时的样式 ===== */
+.widget.toc .toc-content:empty::before,
+.widget.toc .toc-content:empty::after {
+  display: none;
+}
+
+/* ===== 打印样式 ===== */
+@media print {
+  .widget.toc .card-content.toc-content {
+    max-height: none;
+    overflow: visible;
+  }
+  
+  .widget.toc .toc-content::before,
+  .widget.toc .toc-content::after {
+    display: none;
+  }
+}

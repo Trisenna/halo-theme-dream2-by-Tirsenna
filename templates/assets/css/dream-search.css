@@ -1,0 +1,44 @@
+/* 搜索框下拉高亮 */
+.navbar-search .result mark {
+    background: var(--bg-g);
+    color: var(--theme);
+    padding: 0 2px;
+    font-weight: 500;
+    border-radius: 2px;
+}
+
+/* 搜索结果页面卡片间距 */
+#search-results .card + .card {
+    margin-top: 1.4rem !important;
+}
+
+/* 空态 */
+#search-results .card-empty {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: var(--dark-d);
+}
+#search-results .card-empty i {
+    font-size: 4rem;
+    display: block;
+    margin-bottom: 1rem;
+}
+#search-results .card-empty p {
+    font-size: 1.1rem;
+    margin: 0;
+}
+
+/* 关键词高亮（结果页） */
+#search-results mark {
+    background: var(--bg-g);
+    color: var(--theme);
+    padding: 0 3px;
+    border-radius: 2px;
+    font-weight: 500;
+}
+
+/* 加载态 */
+#search-results .loading {
+    text-align: center;
+    padding: 2rem;
+}
