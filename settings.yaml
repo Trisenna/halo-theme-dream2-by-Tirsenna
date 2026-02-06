@@ -1410,26 +1410,9 @@ spec:
         - $formkit: repeater
           name: projects
           label: 开源项目列表
-          help: '配置要在侧边栏展示的 GitHub 开源项目'
+          help: '填写仓库全名，如 Tirsenna/halo-theme-dream2，其余信息将自动从 GitHub 获取'
           children:
             - $formkit: text
-              name: name
-              label: 项目名称
+              name: repo
+              label: 仓库
               placeholder: 'owner/repo'
-            - $formkit: textarea
-              name: description
-              label: 项目描述
-              rows: 2
-              placeholder: '请输入项目描述'
-            - $formkit: text
-              name: url
-              label: 项目链接
-              placeholder: 'https://github.com/owner/repo'
-            - $formkit: text
-              name: language
-              label: 编程语言
-              placeholder: 'JavaScript'
-            - $formkit: text
-              name: stars
-              label: Star 数量
-              placeholder: '1.2k'

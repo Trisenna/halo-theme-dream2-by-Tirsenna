@@ -8,27 +8,23 @@
   <div th:if="${#lists.isEmpty(theme.config.github.projects)}" class="card-empty">暂无项目</div>
   <div th:unless="${#lists.isEmpty(theme.config.github.projects)}" class="card-content">
     <div class="project-list">
-      <a th:each="project : ${theme.config.github.projects}" 
-         class="project-item" 
-         th:href="${project.url}" 
-         target="_blank"
-         rel="noopener noreferrer">
-        <div class="project-name">
-          <i class="ri-github-fill"></i>
-          <span th:text="${project.name}"></span>
-        </div>
-        <p th:if="${!#strings.isEmpty(project.description)}" class="project-desc" th:text="${project.description}"></p>
-        <div class="project-meta">
-          <span th:if="${!#strings.isEmpty(project.language)}" class="project-lang">
-            <i class="ri-code-s-slash-line"></i>
-            <span th:text="${project.language}"></span>
-          </span>
-          <span th:if="${!#strings.isEmpty(project.stars)}" class="project-stars">
-            <i class="ri-star-line"></i>
-            <span th:text="${project.stars}"></span>
-          </span>
-        </div>
-      </a>
+      <th:block th:each="project : ${theme.config.github.projects}">
+        <th:block th:with="repoId=${project.repo != null and project.repo != '' ? project.repo : (project.name != null and #strings.contains(project.name, '/') ? project.name : (project.url != null and project.url != '' ? #strings.substringAfter(project.url, 'github.com/') : ''))}">
+          <a th:if="${repoId != null and repoId != ''}"
+             class="project-item"
+             th:attr="data-repo=${repoId}"
+             th:href="${#strings.startsWith(repoId, 'http') ? repoId : 'https://github.com/' + repoId}"
+             target="_blank"
+             rel="noopener noreferrer">
+            <div class="project-name">
+              <i class="ri-github-fill"></i>
+              <span class="project-name-text">加载中...</span>
+            </div>
+            <p class="project-desc" style="display:none;"></p>
+            <div class="project-meta" style="display:none;"></div>
+          </a>
+        </th:block>
+      </th:block>
     </div>
   </div>
 </div>
