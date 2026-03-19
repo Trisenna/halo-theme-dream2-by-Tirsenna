@@ -2,7 +2,7 @@
 
 基于 [nineya/halo-theme-dream2.0](https://github.com/nineya/halo-theme-dream2.0) 二次开发的 Halo 2.x 博客主题，适配 Halo 2.0 及以上版本。
 
-- **预览站点**: [https://blog.tirsenna.xyz/](https://blog.tirsenna.xyz/)
+- **预览站点**: [https://blog.tirsenna.top/](https://blog.tirsenna.top/)
 - **原主题**: [nineya/halo-theme-dream2.0](https://github.com/nineya/halo-theme-dream2.0)
 - **设计参考**: [kasuie](https://kasuie.cc/)
 
